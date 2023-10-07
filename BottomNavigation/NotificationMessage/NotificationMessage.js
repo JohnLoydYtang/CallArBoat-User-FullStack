@@ -16,7 +16,7 @@ const NotificationMessage = ({navigation}) => {
          Content: We regret to inform you that your upcoming travel has been canceled. 
          We apologize for any inconvenience caused. Details: 
          Trip to [Destination] on [Original Departure Date] canceled. 
-         Refund processing. Contact [Contact Information] for assistance hello. 
+         Refund processing. Contact [Contact Information] for assistance. 
          </Text>
 
          <View style={styles.rebookContainer}>
