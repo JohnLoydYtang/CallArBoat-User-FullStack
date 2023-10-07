@@ -22,7 +22,9 @@ const NotificationMessage = ({navigation}) => {
          <View style={styles.rebookContainer}>
             <Text style={styles.TitleText}>Do you want to re-book or cancel your</Text>
             <Text style={styles.TicketText}>ticket?</Text>
+
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+
             <TouchableOpacity style={styles.cancelDesign} >
                 <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
@@ -30,6 +32,7 @@ const NotificationMessage = ({navigation}) => {
             <TouchableOpacity style={styles.rebookDesign} >
                 <Text style={styles.rebookText}>Rebook</Text>
             </TouchableOpacity>
+            
             </View>
         </View>
 

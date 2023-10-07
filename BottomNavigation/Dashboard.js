@@ -50,7 +50,7 @@ const Tab = createBottomTabNavigator();
 const Dashboard = () => {
   return (
     <Tab.Navigator initialRouteName="Home">
-      <Tab.Screen name="History" component={History} options={{ tabBarIcon: ({ focused }) => (
+      <Tab.Screen name="History" component={History} options={{headerTitle: "                   Ticket Transaction", tabBarIcon: ({ focused }) => (
         <Ionicons name={focused ? 'md-time' : 'md-time-outline'} size={26} style={{ marginBottom: -3 }} />
       )
     }} 
