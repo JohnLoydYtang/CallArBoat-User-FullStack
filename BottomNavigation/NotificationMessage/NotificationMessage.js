@@ -30,7 +30,7 @@ const NotificationMessage = ({navigation}) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.rebookDesign} >
-                <Text style={styles.rebookText}>Rebook</Text>
+                <Text style={styles.rebookText}>Re-book</Text>
             </TouchableOpacity>
             
             </View>
