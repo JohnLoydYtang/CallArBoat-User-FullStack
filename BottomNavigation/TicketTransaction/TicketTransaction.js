@@ -67,7 +67,7 @@ const TicketTransaction = ({navigation}) => {
           <Text style={styles.descriptionText}>Refund will be at the office but without the {'\n'}                    app transaction fee.</Text>
           {isCancelled && <Image source={require('../../assets/images/cancelled.png')} style={styles.cancelledImage} />}
           <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.cancelButton} onPress={handleConfirmCancel}>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
               <Text style={styles.newCancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmCancel}>
