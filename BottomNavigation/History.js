@@ -8,12 +8,12 @@ const History = ({navigation}) => {
 
   const Transaction = [
     { name: 'Bohol', description: 'Economy', date: '2022-01-01' },
-    { name: 'Notification 2', date: '2022-01-02' },
-    { name: 'Notification 3', date: '2022-01-03' },
-    { name: 'Notification 3', date: '2022-01-03' },
-    { name: 'Notification 3', date: '2022-01-03' },
-    { name: 'Notification 3', date: '2022-01-03' },
-    { name: 'Notification 3', date: '2022-01-03' },
+    { name: 'Notification 2', description: 'Economy', date: '2022-01-02' },
+    { name: 'Notification 3', description: 'Economy', date: '2022-01-03' },
+    { name: 'Notification 3', description: 'Economy', date: '2022-01-03' },
+    { name: 'Notification 3', description: 'Economy', date: '2022-01-03' },
+    { name: 'Notification 3', description: 'Economy', date: '2022-01-03' },
+    { name: 'Notification 3', description: 'Economy', date: '2022-01-03' },
 
     // Add more notifications as needed
   ];
@@ -47,6 +47,7 @@ const History = ({navigation}) => {
               <Text style={styles.TransactionName}>{item.name}</Text>
               <Text style={styles.TransactionDesc}>{item.description}</Text>
               <Text style={styles.dateText}>Date: {item.date}</Text>
+              {item.scanned ? <Text style={styles.scannedText}>Scanned</Text> : <Text style={styles.notScannedText}>Not Scanned</Text>} 
             </View>
           </View>
         </TouchableOpacity>
@@ -99,7 +100,25 @@ const styles = StyleSheet.create({
     },
     TransactionDesc:{
       fontSize: 15,
-    }
+    },
+    scannedText: {
+      backgroundColor: '#D1EED6',
+      color: 'green',
+      fontSize: 14,
+      alignSelf:'center',
+      marginRight: 30,
+      padding: 8,
+      borderRadius: 10,
+    },
+    notScannedText: {
+      backgroundColor: '#FFCFD3',
+      padding: 8,
+      borderRadius: 10,
+      color: 'red',
+      fontSize: 14,
+      alignSelf:'center',
+      marginRight: 30,
+    },
 });
 
 export default History;

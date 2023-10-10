@@ -52,7 +52,7 @@ const App = () =>  {
         <Stack.Screen name="AccountInformation" component={AccountInformation} options={{ headerTitle: "      Account Information",}} />
         <Stack.Screen name="Report" component={Report} options={{ headerTitle: "                Reports",}} />
         <Stack.Screen name="NotificationMessage" component={NotificationMessage} options={{headerTitle: "            Notifications",}} />
-        <Stack.Screen name="TicketTransaction" component={TicketTransaction} options={{headerShown: false}} />
+        <Stack.Screen name="TicketTransaction" component={TicketTransaction} options={{headerTitle: "            Ticket Details",}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
