@@ -17,6 +17,7 @@ import AccountInformation from './BottomNavigation/ProfilePages/AccountInformati
 import Report from './BottomNavigation/Report/Report';
 import NotificationMessage from './BottomNavigation/NotificationMessage/NotificationMessage';
 import TicketTransaction from './BottomNavigation/TicketTransaction/TicketTransaction';
+import ViewTicketTransaction from './BottomNavigation/TicketTransaction/ViewTicketTransaction';
 
 const LogoImage = require('./assets/images/LOGO.png');
 
@@ -53,6 +54,7 @@ const App = () =>  {
         <Stack.Screen name="Report" component={Report} options={{ headerTitle: "                Reports",}} />
         <Stack.Screen name="NotificationMessage" component={NotificationMessage} options={{headerTitle: "            Notifications",}} />
         <Stack.Screen name="TicketTransaction" component={TicketTransaction} options={{headerTitle: "            Ticket Details",}} />
+        <Stack.Screen name="ViewTicketTransaction" component={ViewTicketTransaction} options={{headerTitle: "            View Ticket",}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -77,7 +77,7 @@ const TicketTransaction = ({navigation}) => {
         </View>
       </Modal>
 
-            <TouchableOpacity style={styles.viewDesign} >
+            <TouchableOpacity style={styles.viewDesign} onPress={() => navigation.navigate('ViewTicketTransaction')} >
                 <Text style={styles.viewText}>View</Text>
             </TouchableOpacity>
       </View>
