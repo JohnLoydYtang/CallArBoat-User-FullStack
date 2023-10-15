@@ -5,6 +5,10 @@ import { StyleSheet, View, Image, Text, TouchableOpacity, Modal} from "react-nat
 const TicketTransaction = ({navigation}) => {
         const [showPrompt, setShowPrompt] = useState(false);
         const [isCancelled, setIsCancelled] = useState(false);
+        
+        const handleNormalCancel = () => {
+          setShowPrompt(false);
+        };
 
         const handleCancel = () => {
           setShowPrompt(true);
@@ -57,7 +61,7 @@ const TicketTransaction = ({navigation}) => {
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
       
-            <TouchableOpacity style={styles.cancelDesign} onPress={handleCancel} >
+            <TouchableOpacity style={styles.cancelDesign} onPress={handleCancel}>
                 <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
 
@@ -67,7 +71,7 @@ const TicketTransaction = ({navigation}) => {
           <Text style={styles.descriptionText}>Refund will be at the office but without the {'\n'}                    app transaction fee.</Text>
           {isCancelled && <Image source={require('../../assets/images/cancelled.png')} style={styles.cancelledImage} />}
           <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleNormalCancel}>
               <Text style={styles.newCancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmCancel}>

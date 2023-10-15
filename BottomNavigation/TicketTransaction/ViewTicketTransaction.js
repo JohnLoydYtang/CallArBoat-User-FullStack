@@ -6,7 +6,7 @@ const ViewTicketTransaction = ({navigation}) => {
     return (
     <View style={styles.container}>
         <View style={styles.TicketContainer}>
-
+          
         </View>
     </View>
     );
@@ -20,13 +20,9 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     TicketContainer:{
-        backgroundColor: 'white',
-        width: 340,
-        height: '90%',
-        borderRadius: 15,
-        borderWidth: 1,
-        borderColor: 'white',
-        marginBottom: 5,
+        backgroundColor: '#4A79E5',
+        width: 1000,
+        height: '100',
       },
 });
 
