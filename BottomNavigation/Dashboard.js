@@ -55,7 +55,7 @@ const Dashboard = () => {
       )
     }} 
   />
-      <Tab.Screen name="Ticket" component={BookTicket} options={{ tabBarIcon: ({ focused }) => (
+      <Tab.Screen name="Ticket" component={BookTicket} options={{ headerTitle: "                        Companies",tabBarIcon: ({ focused }) => (
         <Ionicons name={focused ? 'clipboard' : 'clipboard-outline'} size={26} style={{ marginBottom: -3 }} />
       )
     }} 

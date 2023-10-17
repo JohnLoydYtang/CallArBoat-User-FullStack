@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#F0EFFF',
   },
   cardContainer: {
     alignItems: 'center',

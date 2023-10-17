@@ -19,6 +19,7 @@ import NotificationMessage from './BottomNavigation/NotificationMessage/Notifica
 import TicketTransaction from './BottomNavigation/TicketTransaction/TicketTransaction';
 import ViewTicketTransaction from './BottomNavigation/TicketTransaction/ViewTicketTransaction';
 import SearchTravel from './BottomNavigation/BookingProcedure/SearchTravel';
+import BookTicketFillup from './BottomNavigation/BookingProcedure/BookTicketFillup';
 
 const LogoImage = require('./assets/images/LOGO.png');
 
@@ -57,6 +58,8 @@ const App = () =>  {
         <Stack.Screen name="TicketTransaction" component={TicketTransaction} options={{headerTitle: "            Ticket Details",}} />
         <Stack.Screen name="ViewTicketTransaction" component={ViewTicketTransaction} options={{headerTitle: "            View Ticket",}}/>
         <Stack.Screen name="SearchTravel" component={SearchTravel} options={{headerTitle: "           Search Travel",}}/>
+        <Stack.Screen name="BookTicketFillup" component={BookTicketFillup} options={{headerTitle: "            Book Ticket",}}/>
+
 
       </Stack.Navigator>
     </NavigationContainer>
