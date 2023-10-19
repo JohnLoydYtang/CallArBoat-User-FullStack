@@ -1,9 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { StatusBar, StyleSheet, KeyboardAvoidingView, Image, Text, TouchableOpacity, View, TextInput} from "react-native";
+import { useRoute } from '@react-navigation/native';
+
 
 const getVerification = require('../assets/images/verification.png');
 
 const Verification = ({ navigation }) => {
+  const route = useRoute();
+  const phoneNumber = route.params?.phoneNumber;
+  
     const [code, setCode] = useState('');
   const codeInputs = useRef([]);
 
@@ -24,7 +29,7 @@ const Verification = ({ navigation }) => {
         </View>
 
             <Text style={styles.TextCommon}>Verification Code</Text>
-            <Text> Please Enter code sent {'\n'} to 09287505435temp</Text>
+            <Text> Please Enter code sent {'\n'} to {phoneNumber}</Text>
 
             <View style={styles.LineContainer}>
         {Array.from({ length: 4 }).map((_, index) => (

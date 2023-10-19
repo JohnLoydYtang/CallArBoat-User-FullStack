@@ -8,6 +8,7 @@
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
       "**/*"
+      
     ],
     "ios": {
       "supportsTablet": true
@@ -15,7 +16,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/Icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "permissions": [
+          "SEND_SMS"
+        ]
       }
     },
     "web": {
