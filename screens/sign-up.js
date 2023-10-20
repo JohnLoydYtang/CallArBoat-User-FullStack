@@ -1,10 +1,13 @@
 import { db } from '../firebaseConfig';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { StatusBar, StyleSheet, KeyboardAvoidingView, TextInput, Text, TouchableOpacity, Modal, View} from "react-native";
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { StatusBar, KeyboardAvoidingView, TextInput, Text, TouchableOpacity, Modal, View} from "react-native";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
-const SignUp = ({ navigation, route }) => {
+//CSS
+import styles from '../assets/css/screensStyle/sign-upStyle';
+
+const SignUp = ({ navigation }) => {
   const [name, onChangeText] = useState('');
   const [number, onChangeNumber] = useState('');
   const [username, onChangeUsername] = useState('');
@@ -63,27 +66,33 @@ const SignUp = ({ navigation, route }) => {
       return;
     }
 
-
     try {
       const auth = getAuth(); // Initialize the auth object
 
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
+      // Set the display name for the user
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+        phoneNumber: number
+      });
+      
       // Access the 'users' collection
       const usersCollection = collection(db, 'Passengers');
-
+      
       // Add a new document with a generated ID
       await setDoc(doc(usersCollection), {
         userID: userCredential.user.uid, // Store the user's ID in the document
         name: name,
-        phoneNumber: number,
+        phoneNumber: number, // Use the correct variable name here
         username: username,
         email: email,
         password: password,
       });
+      
 
       // Navigate to the verification screen or any other screen
-      navigation.navigate('Verification', { phoneNumber: number });
+      navigation.navigate('SignIn');
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
         setEmailError('Email is already in use');
@@ -92,6 +101,7 @@ const SignUp = ({ navigation, route }) => {
       }
     }
   };
+
 
     return (
           <KeyboardAvoidingView   keyboardVerticalOffset={100} style={styles.container}>
@@ -155,121 +165,5 @@ const SignUp = ({ navigation, route }) => {
       </KeyboardAvoidingView>
     );
   }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    margin: 12,
-    padding: 10,
-    width: 240,
-    borderRadius: 10,
-    overflow: 'hidden',
-    backgroundColor: 'white',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 6,   
-  },
-  inputPass: {
-      margin: 12,
-      padding: 10,
-      width: 240,
-      borderRadius: 10,
-      overflow: 'hidden',
-      backgroundColor: 'white',
-      shadowColor: '#000000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 6,   
-    },
-  ButtonDesign:{
-    width: 180,
-    height: 48,
-    borderRadius: 10,  
-    marginTop: 20, 
-    overflow: 'hidden',
-    backgroundColor: '#4A79E5',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 6,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    top: 10,
-    fontSize: 19,
-  },
-  text1: {
-    fontSize: 13,
-    marginTop: 30,
-  },
-  commontext:{
-    right:30,
-    marginTop: 40,
-  },
-  text2: {
-    color: '#4A79E5',
-    marginLeft: 200,
-    bottom: 18,
-  },
-  Common: {
-    marginBottom: 25,
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  error:{
-    color:'red',
-  },
-  successText:{
-    color:'blue',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-      backgroundColor: 'white',
-      padding: 20,
-      borderRadius: 5,
-      alignItems: 'center',
-  },
-  modalText: {
-      fontSize: 18,
-      marginBottom: 20,
-      textAlign: 'center',
-  },
-  modalButton: {
-      backgroundColor: 'blue',
-      padding: 10,
-      borderRadius: 5,
-      top: 10,
-  },
-  modalButtonText: {
-      color: 'white',
-      fontWeight: 'bold',
-      textAlign: 'center',
-  },
-});
   
 export default SignUp;

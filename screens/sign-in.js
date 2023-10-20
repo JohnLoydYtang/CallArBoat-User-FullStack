@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { CheckBox } from 'react-native-elements';
-import { StatusBar, KeyboardAvoidingView, StyleSheet, TextInput, View, Image, Text, TouchableOpacity} from "react-native";
+import { StatusBar, KeyboardAvoidingView, TextInput, View, Image, Text, TouchableOpacity} from "react-native";
 import { signInWithEmailAndPassword  } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import { AuthContext } from '../AuthContext'; // Import the AuthContext
+
+//CSS
+import styles from '../assets/css/screensStyle/sign-inStyle';
 
 const getLogo = require('../assets/images/Logo1.png');
 
@@ -12,173 +16,89 @@ const SignIn = ({navigation}) => {
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
 
+    const { login } = useContext(AuthContext); // Access the login function from AuthContext
+
     const handleRememberMe = () => {
         setRememberMe(!rememberMe);
-      };
+    };
 
-      const handleSignIn = async () => {
+    const handleSignIn = async () => {
         try {
           const userCredential = await signInWithEmailAndPassword(auth, value, password);
           const user = userCredential.user;
       
           // User is signed in
-          navigation.navigate('Dashboard');
+          // Call the login function from AuthContext to update the authentication state
+          login();
+      
+          // Check if the user is authenticated before navigating to the dashboard
+          if (user) {
+            navigation.navigate('Dashboard');
+          } else {
+            setError('An error occurred');
+          }
           console.log(userCredential.user);
         } catch (error) {
           // Handle login error
           if (error.code === 'auth/missing-password') {
             setError('Please enter a password');
           } else if (error.code === 'auth/invalid-login-credentials') {
-              setError('Invalid email or password');
+            setError('Invalid email or password');
           } else if (error.code === 'auth/invalid-email') {
-              setError('Invalid email address');
+            setError('Invalid email address');
           } else {
-              setError('An error occurred');
+            setError('An error occurred');
           }
-          console.log(error);        }
-    };
-      
+          console.log(error);
+        }
+      };
+
     return (
-    <KeyboardAvoidingView   keyboardVerticalOffset={100} style={styles.container}>
-        <View style={styles.imageContainer}>
-            <Image source={getLogo}/>
-        </View>
+        <KeyboardAvoidingView keyboardVerticalOffset={100} style={styles.container}>
+            <View style={styles.imageContainer}>
+                <Image source={getLogo}/>
+            </View>
 
-        <Text style={styles.errorText}>{error}</Text>
-        <TextInput
-            style={styles.input}
-            onChangeText={text => onChangeText(text)}
-            value={value}
-            placeholder="Username"
-        />
+            <Text style={styles.errorText}>{error}</Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={text => onChangeText(text)}
+                value={value}
+                placeholder="Username"
+            />
 
-        <TextInput
-            style={styles.inputPass}
-            onChangeText={text => onChangePassword(text)}
-            value={password}
-            placeholder="Password"
-            secureTextEntry
-        />
+            <TextInput
+                style={styles.inputPass}
+                onChangeText={text => onChangePassword(text)}
+                value={password}
+                placeholder="Password"
+                secureTextEntry
+            />
 
-        <CheckBox
-        containerStyle={styles.checkboxContainer}
-            title="REMEMBER ME"
-            checked={rememberMe}
-            onPress={handleRememberMe}
-        />
+            <CheckBox
+                containerStyle={styles.checkboxContainer}
+                title="REMEMBER ME"
+                checked={rememberMe}
+                onPress={handleRememberMe}
+            />
 
+            <TouchableOpacity style={styles.ButtonDesign} onPress={handleSignIn}>
+                <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
 
-    <TouchableOpacity style={styles.ButtonDesign} onPress={handleSignIn}>
-        <Text style={styles.buttonText}>Sign In</Text>
-    </TouchableOpacity>
+            <TouchableOpacity>
+                <Text style={styles.text1}>Forgot Your Password?</Text>
+            </TouchableOpacity>
 
-    <TouchableOpacity>
-            <Text style={styles.text1}>Forgot Your Password?</Text>
-    </TouchableOpacity>
+            <Text style={styles.commontext}>DON'T HAVE AN ACCOUNT?</Text>
 
-    <Text style={styles.commontext}>DON'T HAVE AN ACCOUNT?</Text>
-      
-    <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-      <Text style={styles.text2}>SIGN UP</Text>
-    </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                <Text style={styles.text2}>SIGN UP</Text>
+            </TouchableOpacity>
 
-
-    <StatusBar style="auto"/>
-    </KeyboardAvoidingView>
+            <StatusBar style="auto"/>
+        </KeyboardAvoidingView>
     );
-}
+};
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    imageContainer: {
-      marginTop: 80,
-    },
-    input: {
-      margin: 12,
-      padding: 10,
-      width: 240,
-      marginTop: 35,
-      marginBottom: 20,
-      borderRadius: 10,
-      overflow: 'hidden',
-      backgroundColor: 'white',
-      shadowColor: '#000000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 6,   
-    },
-    inputPass: {
-        margin: 12,
-        padding: 10,
-        width: 240,
-        borderRadius: 10,
-        overflow: 'hidden',
-        backgroundColor: 'white',
-        shadowColor: '#000000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 6,   
-      },
-    ButtonDesign:{
-      width: 180,
-      height: 48,
-      borderRadius: 10,  
-      overflow: 'hidden',
-      backgroundColor: '#4A79E5',
-      shadowColor: '#000000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 6,
-    },
-    buttonText: {
-      color: 'white',
-      textAlign: 'center',
-      fontWeight: 'bold',
-      top: 10,
-      fontSize: 19,
-    },
-    text1: {
-      fontSize: 13,
-      marginTop: 30,
-    },
-    commontext:{
-      right:30,
-      marginTop: 40,
-    },
-    text2: {
-      color: '#4A79E5',
-      marginLeft: 180,
-      bottom: 18,
-    },
-    checkboxContainer: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      right:  30,
-      width: 200,
-      backgroundColor: 'white',
-      borderWidth: 0,
-    },
-    errorText:{
-      color: 'red',
-      top: 20,
-    }
-  });
-  
 export default SignIn;

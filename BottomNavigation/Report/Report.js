@@ -1,15 +1,66 @@
-import React from 'react';
-import { StatusBar, KeyboardAvoidingView, StyleSheet, TextInput, View, Image, Text, TouchableOpacity} from "react-native";
+import React, { useState } from 'react';
+import { TextInput, View, Text, TouchableOpacity} from "react-native";
+import { getAuth } from 'firebase/auth';
+import { collection, doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
 
+//CSS
+import styles from '../../assets/css/BottomNavigationStyle/Report/ReportStyle';
 
 const Report = ({navigation}) => {
     const [Name, onChangeText] = React.useState('');
     const [Message, onChangeMessage] = React.useState('');
+    const [nameError, setNameError] = useState('');
+    const [messageError, setMessageError] = useState('');
+    const [error, setError] = useState('');
+
+    const handleReport = async () => {
+        setNameError('');
+        setMessageError('');
+        setError('');
+    
+        if (Name.trim() === '') {
+          setNameError('                      Please subject of the report');
+          return;
+        }
+    
+        if (Message.trim() === '') {
+          setMessageError('                      Message cannot be empty!');
+          return;
+        }
+    
+        try {
+            const auth = getAuth(); // Initialize the auth object
+            const user = auth.currentUser; // Get the current user
+        
+            if (user) {
+              const usersCollection = collection(db, 'Reports');
+        
+              // Add a new document with a generated ID
+              await setDoc(doc(usersCollection), {
+                reportID: user.uid, // Store the user's ID in the document
+                rep_message: Name,
+                subject_rep: Message,
+              });
+        
+              // Navigate to the verification screen or any other screen
+              navigation.navigate('Profile');
+            } else {
+              setError('                             User not authenticated');
+            }
+          } catch (error) {
+            console.log(error);
+            setMessageError('                      Error sending report');
+          }
+        };
 
     return (
     <View style={styles.container}>
         <View style={styles.TicketContainer}>
+
             <Text style={styles.Text}>Subject for report:</Text>
+            {error !== '' && <Text style={styles.error}>{error}</Text>}
+            {nameError !== '' && <Text style={styles.error}>{nameError}</Text>}
             <TextInput
                 style={styles.input}
                 onChangeText={text => onChangeText(text)}
@@ -17,6 +68,7 @@ const Report = ({navigation}) => {
                 placeholder=" "
             />
             
+            {messageError !== '' && <Text style={styles.error}>{messageError}</Text>}
             <Text style={styles.Text}>Message:</Text>
             <TextInput
             style={styles.inputMessage}
@@ -28,67 +80,12 @@ const Report = ({navigation}) => {
             value={Message}
             />
 
-        <TouchableOpacity style={styles.ButtonDesign} >
+        <TouchableOpacity style={styles.ButtonDesign} onPress={handleReport}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
         </View>
     </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#F0EFFF',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    TicketContainer:{
-        backgroundColor: 'white',
-        width: 340,
-        height: '90%',
-        borderRadius: 15,
-        borderWidth: 1,
-        borderColor: 'white',
-        marginBottom: 5,
-      },
-      Text:{
-        marginLeft: 25,
-        marginTop: 10,
-      },
-      input: {
-        margin: 12,
-        padding: 10,
-        width: 300,
-        borderRadius: 10,
-        overflow: 'hidden',
-        backgroundColor: '#F0EFFF',
-        marginLeft: 18
-      },
-      inputMessage:{
-        margin: 12,
-        padding: 10,
-        width: 300,
-        borderRadius: 10,
-        backgroundColor: '#F0EFFF',
-        marginLeft: 18,        
-      },
-      ButtonDesign:{
-        width: 100,
-        height: 48,
-        borderRadius: 10,  
-        overflow: 'hidden',
-        backgroundColor: '#4A79E5',
-        alignItems: 'center',
-        marginBottom: 60,
-        marginLeft: 120,
-        marginTop: 20,
-      },
-      buttonText:{
-        color: 'white',
-        marginTop: 15,
-        fontWeight: 'bold',
-      }
-});
 
 export default Report;
