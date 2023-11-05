@@ -22,12 +22,12 @@ export default StyleSheet.create({
     text1:{
       color: 'white',
       fontSize: 15,
-      right: 95,
+      right: 120,
     },
     text2:{
       color: 'white',
       fontWeight: 'bold',
-      fontSize: 18,
+      fontSize: 25,
       marginBottom: 100,
       right: 50,
     },

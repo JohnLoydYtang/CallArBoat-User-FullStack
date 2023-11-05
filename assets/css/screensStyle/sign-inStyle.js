@@ -90,5 +90,8 @@ export default StyleSheet.create({
     errorText:{
       color: 'red',
       top: 20,
-    }
+    },
+    error:{
+      color:'red',
+    },
   });

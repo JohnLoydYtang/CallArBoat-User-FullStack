@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image} from "react-native";
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 //CSS
 import styles from '../../assets/css/BottomNavigationStyle/TicketTransaction/ViewTicketTransactionStyle';
@@ -8,6 +9,16 @@ const QrCodeImage = require('../../assets/images/qrcode.png');
 
 
 const ViewTicketTransaction = ({navigation}) => {
+    const route = useRoute();
+    const { item, medallionPrice } = route.params;
+
+            
+    const date = item.Date.toDate();
+    const dateString = date.toLocaleDateString();
+
+    const dateIssued = item.dateIssued.toDate();
+    const dateIssuedString = dateIssued.toLocaleDateString();
+
     return (
     <View style={styles.container}>
         <View style={styles.TicketContainer}>
@@ -16,20 +27,20 @@ const ViewTicketTransaction = ({navigation}) => {
             <Text style={styles.CompanyTitle}>COMPANY NAME</Text> 
 
             <View style={styles.Details}>
-            <Text style={styles.NameDetails}>Name: </Text>
+            <Text style={styles.NameDetails}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text> </Text>
             <Text style={styles.VesselDetails}>Vessel: </Text>
             <Text style={styles.RouteDetails}>Route: </Text>
-            <Text style={styles.SailDetails}>Sail Date: </Text>
-            <Text style={styles.AccomDetails}>Accom: </Text>
+            <Text style={styles.SailDetails}>Sail Date: <Text style={{textDecorationLine: 'underline'}}>{dateString}</Text> </Text>
+            <Text style={styles.AccomDetails}>Accom: <Text style={{textDecorationLine: 'underline'}}>{item.AccomType}</Text></Text>
             <Text style={styles.SeatDetails}>Seat/Bed #: </Text>
-            <Text style={styles.SexDetails}>Sex/Age: </Text>
+            <Text style={styles.SexDetails}>Sex/Age: <Text style={{textDecorationLine: 'underline'}}>{item.Gender}</Text> / <Text style={{textDecorationLine: 'underline'}}>{item.Age}</Text></Text>
             </View>
 
-            <Text style={styles.DateDetails}>Date issued:</Text>
+            <Text style={styles.DateDetails}>Date issued: <Text style={{textDecorationLine: 'underline'}}>{dateIssuedString}</Text> </Text>
 
             <View style={styles.AdditionalDetails}>
-            <Text style={styles.FareDetails}>Fare: </Text>
-            <Text style={styles.TicketTypeDetails}>Ticket Type: </Text>
+            <Text style={styles.FareDetails}>Fare: <Text style={{textDecorationLine: 'underline'}}>{medallionPrice}</Text></Text>
+            <Text style={styles.TicketTypeDetails}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text> </Text>
             <Text style={styles.DiscountDetails}>Discount: </Text>
             <Text style={styles.AppDetails}>App Transac Fee: </Text>
             <Text style={styles.TotalDetails}>Total: </Text>

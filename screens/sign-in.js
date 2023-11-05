@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { CheckBox } from 'react-native-elements';
 import { StatusBar, KeyboardAvoidingView, TextInput, View, Image, Text, TouchableOpacity} from "react-native";
 import { signInWithEmailAndPassword  } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { AuthContext } from '../AuthContext'; // Import the AuthContext
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //CSS
 import styles from '../assets/css/screensStyle/sign-inStyle';
@@ -15,43 +16,56 @@ const SignIn = ({navigation}) => {
     const [password, onChangePassword] = React.useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);    
+    const { isAuthenticated, login } = useContext(AuthContext);
 
-    const { login } = useContext(AuthContext); // Access the login function from AuthContext
+    console.log('isAuthenticated:', isAuthenticated);
 
     const handleRememberMe = () => {
         setRememberMe(!rememberMe);
     };
 
     const handleSignIn = async () => {
-        try {
-          const userCredential = await signInWithEmailAndPassword(auth, value, password);
-          const user = userCredential.user;
-      
-          // User is signed in
-          // Call the login function from AuthContext to update the authentication state
-          login();
-      
-          // Check if the user is authenticated before navigating to the dashboard
-          if (user) {
-            navigation.navigate('Dashboard');
-          } else {
-            setError('An error occurred');
-          }
-          console.log(userCredential.user);
-        } catch (error) {
-          // Handle login error
-          if (error.code === 'auth/missing-password') {
-            setError('Please enter a password');
-          } else if (error.code === 'auth/invalid-login-credentials') {
-            setError('Invalid email or password');
-          } else if (error.code === 'auth/invalid-email') {
-            setError('Invalid email address');
-          } else {
-            setError('An error occurred');
-          }
-          console.log(error);
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, value, password);
+        const user = userCredential.user;
+
+        const userID = user.uid;
+        console.log('userID:', userID);    
+    
+        // User is signed in
+        // Call the login function from AuthContext to update the authentication state
+        login();
+    
+        // Store the login status in AsyncStorage
+        await AsyncStorage.setItem('isLoggedIn', 'true');
+    
+        // Check if the user is authenticated before navigating to the dashboard
+        if (user) {
+          navigation.navigate('Dashboard');
+        } else {
+          setError('An error occurred');
         }
-      };
+      } catch (error) {
+        // Handle login error
+        if (error.code === 'auth/missing-password') {
+          setError('Please enter a password');
+        } else if (error.code === 'auth/invalid-login-credentials') {
+          setError('Invalid email or password');
+        } else if (error.code === 'auth/invalid-email') {
+          setError('Invalid email address');
+        } else {
+          setError('An error occurred');
+        }
+      }
+    };
+
+    useEffect(() => {
+      // Check if the user is already authenticated
+      if (isAuthenticated) {
+        navigation.navigate('Dashboard');
+      }
+    }, [isAuthenticated]);
 
     return (
         <KeyboardAvoidingView keyboardVerticalOffset={100} style={styles.container}>

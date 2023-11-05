@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, Text, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { collection, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig'; // Assuming you have already set up the Firebase Firestore connection
 
 //CSS
 import styles from '../../assets/css/BottomNavigationStyle/ProfilePages/AcountInformationStyle';
@@ -12,6 +15,29 @@ const AccountInformation = ({ navigation }) => {
     const [Username, onChangeUsername] = React.useState('');
     const [password, onChangePassword] = React.useState('');
     const [selectedImage, setSelectedImage] = useState(null);
+
+    const route = useRoute();
+    const { item } = route.params;
+    const maskedPassword = item.password.replace(/./g, '*');
+
+    const updateUserAccount = async () => {
+      try {
+        const passengerRef = doc(db, 'Passengers', item.id); // Assuming 'item.id' is the ID of the user document in the Passengers collection
+    
+        await updateDoc(passengerRef, {
+          name: Name,
+          phoneNumber: number,
+          username: Username,
+          password: password,
+        });
+    
+        alert('User account information updated successfully!');
+        navigation.navigate('Profile'); // Replace 'ProfileScreen' with the actual name of your ProfileScreen component
+      } catch (error) {
+        console.error('Error updating user account information:', error);
+        alert('An error occurred while updating user account information. Please try again later.');
+      }
+    };
 
     const openImagePickerAsync = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -68,7 +94,7 @@ const AccountInformation = ({ navigation }) => {
             style={styles.input}
             onChangeText={text => onChangeText(text)}
             value={Name}
-            placeholder="John Loyd (Temp get from database)"
+            placeholder={item.name}
         />
         </View>
 
@@ -78,7 +104,7 @@ const AccountInformation = ({ navigation }) => {
             style={styles.input}
             onChangeText={number => onChangeNumber(number)}
             value={number}
-            placeholder="(Temp get from database)"
+            placeholder={item.phoneNumber}
             keyboardType="phone-pad"
         />
         </View>
@@ -89,7 +115,7 @@ const AccountInformation = ({ navigation }) => {
             style={styles.input}
             onChangeText={text => onChangeUsername(text)}
             value={Username}
-            placeholder="(Temp get from database)"
+            placeholder={item.username}
         />
         </View>
 
@@ -99,12 +125,12 @@ const AccountInformation = ({ navigation }) => {
             style={styles.inputPass}
             onChangeText={text => onChangePassword(text)}
             value={password}
-            placeholder="(Temp get from database)"
+            placeholder={maskedPassword}
             secureTextEntry
         />
         </View>
 
-        <TouchableOpacity style={styles.ButtonDesign} >
+        <TouchableOpacity style={styles.ButtonDesign} onPress={updateUserAccount}>
           <Text style={styles.buttonText}>UPDATE User Account Information</Text>
         </TouchableOpacity>
       </View>

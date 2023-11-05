@@ -4,28 +4,131 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
+import { getAuth } from '@firebase/auth';
+import { getFirestore, collection, doc, setDoc, Timestamp, firestore } from "firebase/firestore";
+import { db } from '../../../firebaseConfig';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { useRoute } from '@react-navigation/native';
 
 //CSS
-import styles from '../../assets/css/BottomNavigationStyle/BookingProcedureStyle/BookTicketFillupStyle';
+import styles from '../../../assets/css/BottomNavigationStyle/BookingProcedureStyle/BookTicketFillupStyle';
 
 const BookTicketFillup = ({navigation}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false); // Add showDatePicker state variable
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
-  const [location, setLocation] = useState('');
-  const [destination, setDestination] = useState('');
-  const [selectedValue, setSelectedValue] = useState('Male');
+  const [location, setLocation] = useState('Cebu');
+  const [destination, setDestination] = useState('Bohol');
+  const [gender, setGender] = useState('Male');
   const [selectedValueAccom, setSelectedValueAccom] = useState('Economy');
   const [selectedValueTicket, setSelectedValueTicket] = useState('Regular');
   const [image, setImage] = useState(null);
-  
+  const [error, setError] = useState('');
+  const [messageError, setMessageError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const uniqueId = Date.now();
 
-  const handleDateChange = (event, selected) => {
-    const currentDate = selected || selectedDate;
-    setSelectedDate(currentDate);
-    setShowDatePicker(false); // Hide the date picker after selecting a date
+  const route = useRoute();
+  const { item } = route.params;
+  const medallionId = route.params.item.id;
+
+  const uploadImage = async (imageUri) => {
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+    const storage = getStorage();
+    const storageRef = ref(storage, '/Medallion-BookedTicket/' + 'Valid-Id' + '-' + uniqueId);
+    const uploadTask = uploadBytesResumable(storageRef, blob);
+    
+    return new Promise((resolve, reject) => {
+      uploadTask.on('state_changed', 
+        (snapshot) => {
+          // You can use this to monitor the progress of the upload if you want
+        }, 
+        (error) => {
+          // Handle unsuccessful uploads
+          reject(error);
+        }, 
+        () => {
+          // Handle successful uploads on complete
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+    };
+   
+  
+   const handleTicketFillup = async () => {
+    setError('');
+   
+    if (name.trim() === '') {
+      setError('Please input name');
+      return;
+    }
+    if (age.trim() === '') {
+      setError('Please input age ');
+      return;
+    }
+    if ((image || '').trim() === '') {
+      setError('Please upload image ');
+      return;
+    }
+    try {
+      const auth = getAuth(); // Initialize the auth object
+      const user = auth.currentUser; // Get the current user
+  
+      if (user) {
+        const imageUrl = await uploadImage(image); // Upload the image and get the URL
+   
+        const usersCollection = collection(db, 'Medallion-BookedTicket');
+        const firestoreDate = selectedDate; // Use the selectedDate value instead of creating a new Date object
+   
+        // Add a new document with a generated ID
+        await setDoc(doc(usersCollection), {
+          user: user.uid,
+          Date: firestoreDate,
+          "dateIssued": new Date(), // Automatically save the current date as the date-issued
+          Location: location,
+          Destination: destination,
+          Name: name,
+          Age: age,
+          Gender: gender,
+          AccomType: selectedValueAccom,
+          TicketType: selectedValueTicket,
+          ImageUrl: imageUrl, // Save the image URL in Firestore
+          MedallionId: medallionId, // Save the Medallion id in Firestore
+        });
+   
+        const firestoreDateString = firestoreDate.toISOString();
+
+        navigation.navigate('PaymentProcess', {          
+          Name: name,
+          Age: age,
+          Gender: gender,
+          AccomType: selectedValueAccom,
+          TicketType: selectedValueTicket,
+          item: item,
+          Date: firestoreDateString
+        });         
+         console.log('Success Saving Data');
+      } else {
+        setError('User not authenticated');
+      }
+    } catch (error) {
+      console.log(error);
+      setMessageError('Error Booking');
+    }
+   };
+  
+   const handleDateChange = (event, date) => {
+    setShowDatePicker(false);
+    if (date) {
+      setSelectedDate(date);
+    }
   };
+
 
   const handleNameChange = (text) => {
     setName(text);
@@ -59,7 +162,7 @@ const BookTicketFillup = ({navigation}) => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.Text}>Fill up your ticket details:</Text>
-
+            {error !== '' && <Text style={styles.error}>{error}</Text>}
               <View style={styles.textInputStyle}>
               <Text style={styles.promptText}>Date:</Text>
                 <Pressable onPress={() => setShowDatePicker(true)}>
@@ -75,15 +178,14 @@ const BookTicketFillup = ({navigation}) => {
                     value={selectedDate}
                     mode="date"
                     onChange={handleDateChange}
-                  />
-                )}
+                  />               
+                ) }
               </View>
 
               <View style={styles.rowContainer}>
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputTextStyle}>Location:</Text>
                     <TextInput
-                      placeholder="Input your Location                                     "
                       value={location}
                       onChangeText={handleLocationChange}
                     />
@@ -94,13 +196,12 @@ const BookTicketFillup = ({navigation}) => {
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputTextStyle}>Destination:</Text>
                     <TextInput
-                      placeholder="Input your Destination                                         "
                       value={destination}
                       onChangeText={handleDestinationChange}
                     />
                 </View>
               </View>
-              
+
               <View style={styles.rowContainer}>
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputName}>Name:</Text>
@@ -111,7 +212,7 @@ const BookTicketFillup = ({navigation}) => {
                   />
                 </View>
               </View>
-                
+
               <View style={styles.rowContainer}>
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputTextStyle}>Age:</Text>
@@ -128,14 +229,13 @@ const BookTicketFillup = ({navigation}) => {
                 <View style={styles.PickerTextStyle}>
                 <Text style={styles.inputTextStyle}>Gender:</Text>
                   <View style={styles.dropdownContainer}>
-                  <Picker selectedValue={selectedValue} onValueChange={(itemValue) => setSelectedValue(itemValue)}>
+                  <Picker selectedValue={gender} onValueChange={(itemValue) => setGender(itemValue)}>
                     <Picker.Item label="MALE" value="Male"/>
                     <Picker.Item label="FEMALE" value="Female"/>
                   </Picker>
                   </View>
                 </View>
               </View>
-
               <View style={styles.rowContainer}>
                 <View style={styles.PickerTextStyle}>
                   <Text style={styles.inputTextStyle}>Accom Type:</Text>
@@ -170,9 +270,15 @@ const BookTicketFillup = ({navigation}) => {
                 </View>
               </View>
 
-              <TouchableOpacity style={styles.ButtonDesign} onPress={() => navigation.navigate('PaymentProcess')}>
-                <Text style={styles.buttonText}>Proceed</Text>
-              </TouchableOpacity>
+          <TouchableOpacity style={styles.ButtonDesign} onPress={handleTicketFillup}>
+          {isLoading ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="medium" color="gray" />
+            </View>
+            ) : (            
+              <Text style={styles.buttonText}>Proceed</Text>
+            )}
+          </TouchableOpacity>
         </ScrollView>
       );      
 };

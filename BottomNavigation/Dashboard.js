@@ -2,9 +2,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Image, Text, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../AuthContext';
-import { firestore } from '../firebaseConfig'; // Replace '../firebase' with the path to your Firebase configuration file
+import { auth } from '../firebaseConfig'; // Replace '../firebase' with the path to your Firebase configuration file
 
 //BOTTOM NAVIGATION
 import BookTicket from './BookTicket';
@@ -19,37 +18,26 @@ import styles from '../assets/css/BottomNavigationStyle/DashboardStyle';
 const dashboardImage = require('../assets/images/dashboard.png');
 
 const HomeScreen = () => {
-  const { isAuthenticated, user } = useContext(AuthContext);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    console.log('isAuthenticated:', isAuthenticated);
-    console.log('user:', user);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setIsAuthenticated(user !== null);
+      if (user) {
+        setUserName(user.displayName);
+      }
+    });
 
-    if (isAuthenticated && user) {
-      // Fetch user data or perform any other actions for authenticated users
-      const userRef = firestore.collection('Passengers').doc(user.uid);
-      userRef.get().then((doc) => {
-        if (doc.exists) {
-          const userData = doc.data();
-          console.log('User data:', userData);
-          setUserName(userData.name);
-        } else {
-          console.log('User document does not exist');
-        }
-      }).catch((error) => {
-        console.log('Error retrieving user data:', error);
-      });
-    }
-  }, [isAuthenticated, user]);
-  
+    return () => unsubscribe();
+  }, []);
 
   return (
     <View style={styles.screenContainer}>
       <View style={styles.imagecontainer}>
         <Image source={dashboardImage} style={styles.image} />
         <View style={styles.overlay}>
-          <Text style={styles.text1}>Good Morning,</Text>
+          <Text style={styles.text1}>Good Day,</Text>
           {isAuthenticated && <Text style={styles.text2}>{userName}</Text>}
         </View>
       </View>
@@ -78,7 +66,25 @@ const HomeScreen = () => {
 const Tab = createBottomTabNavigator();
 
 const Dashboard = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      // You can update the authentication status in the AuthContext here if needed
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  console.log('isAuthenticated:', isAuthenticated);
+
+  // Add a console log to log the value of the `isAuthenticated` state after it has been rendered.
+  // console.log('isAuthenticated state:', isAuthenticatedState);
+
+  // Add a console log to log the value of the `isAuthenticated` prop when it is first received.
+  console.log('isAuthenticated prop:', isAuthenticated);
+
+  // Use a `useEffect` hook to subscribe to changes in the `isAuthenticated` state.
 
   return (
     <Tab.Navigator initialRouteName="Home">
@@ -93,10 +99,15 @@ const Dashboard = () => {
         )
       }} 
   />
-      <Tab.Screen name="Home" component={HomeScreen} options={{headerShown: false,  tabBarIcon: ({ focused }) => (
-        <Ionicons name={focused ? 'md-home' : 'md-home-outline'} size={26} style={{ marginBottom: -3 }} />
-      )}}
-    />
+        <Tab.Screen
+                name="Home"
+                options={{ headerShown: false, tabBarIcon: ({ focused }) => (
+                  <Ionicons name={focused ? 'md-home' : 'md-home-outline'} size={26} style={{ marginBottom: -3 }} />
+                )}}
+              >
+                {() => <HomeScreen isAuthenticated={isAuthenticated} />}
+        </Tab.Screen>
+
       <Tab.Screen name="Notifications" component={Notifications} options={{headerTitle: "                        Notifications",  tabBarIcon: ({ focused }) => (
         <Ionicons name={focused ? 'notifications' : 'notifications-outline'} size={26} style={{ marginBottom: -3 }} />
       )}}

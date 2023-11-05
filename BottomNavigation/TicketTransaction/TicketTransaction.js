@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal} from "react-native";
+import { useRoute } from '@react-navigation/native';
+import { collection, getDocs } from "firebase/firestore";
+import {db} from '../../firebaseConfig';
 
 //CSS
 import styles from '../../assets/css/BottomNavigationStyle/TicketTransaction/TicketTransactionStyle';
@@ -7,6 +10,14 @@ import styles from '../../assets/css/BottomNavigationStyle/TicketTransaction/Tic
 const TicketTransaction = ({navigation}) => {
         const [showPrompt, setShowPrompt] = useState(false);
         const [isCancelled, setIsCancelled] = useState(false);
+
+        const route = useRoute();
+        const { item, medallionImage, medallionPrice } = route.params;
+        
+        const date = item.Date.toDate();
+        const dateString = date.toLocaleDateString();
+      
+        
         
         const handleNormalCancel = () => {
           setShowPrompt(false);
@@ -43,18 +54,21 @@ const TicketTransaction = ({navigation}) => {
     return (
     <View style={styles.container}>
       <View style={styles.TicketContainer}>
-      <Image source={require('../../assets/images/default-profile-picture.png')} style={styles.image}/>
-      <View style={styles.textContainer}>
-            <Text style={styles.textStyle}>Name:</Text>
+      {medallionImage ? 
+            <Image source={{uri: medallionImage}} style={styles.image}/> : 
+            <Text>No image</Text>
+       }     
+            <View style={styles.textContainer}>
+            <Text style={styles.textStyle}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text></Text>
             <Text style={styles.textStyle}>Vessel:</Text>
             <Text style={styles.textStyle}>Route:</Text>
-            <Text style={styles.textStyle}>Sail Date:</Text>
-            <Text style={styles.textStyle}>Accom:</Text>
+            <Text style={styles.textStyle}>Sail Date: <Text style={{textDecorationLine: 'underline'}}>{dateString}</Text></Text>
+            <Text style={styles.textStyle}>Accom: <Text style={{textDecorationLine: 'underline'}}>{item.AccomType}</Text></Text>
             <Text style={styles.textStyle}>Seat/Bed#:</Text>
-            <Text style={styles.textStyle}>Sex/Age:</Text>
-            <Text style={styles.textStyle}>Ticket Type:</Text>
-            <Text style={styles.textStyle}>Fare</Text>
-            <Text style={styles.textStyle}>Discount</Text>
+            <Text style={styles.textStyle}>Sex/Age: <Text style={{textDecorationLine: 'underline'}}>{item.Gender}</Text> / <Text style={{textDecorationLine: 'underline'}}>{item.Age}</Text></Text>
+            <Text style={styles.textStyle}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text></Text>
+            <Text style={styles.textStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>{medallionPrice}</Text></Text>
+            <Text style={styles.textStyle}>Discount:</Text>
             <Text style={styles.textStyle}>App Transac Fee:</Text>
             <Text style={styles.textStyle}>Total:</Text>
             <Text style={styles.paidStyle}>Paid:</Text>
@@ -83,7 +97,7 @@ const TicketTransaction = ({navigation}) => {
         </View>
       </Modal>
 
-            <TouchableOpacity style={styles.viewDesign} onPress={() => navigation.navigate('ViewTicketTransaction')} >
+            <TouchableOpacity style={styles.viewDesign} onPress={() => navigation.navigate('ViewTicketTransaction', { item, medallionImage, medallionPrice })} >
                 <Text style={styles.viewText}>View</Text>
             </TouchableOpacity>
       </View>

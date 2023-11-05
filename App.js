@@ -21,84 +21,262 @@ import Report from './BottomNavigation/Report/Report';
 import NotificationMessage from './BottomNavigation/NotificationMessage/NotificationMessage';
 import TicketTransaction from './BottomNavigation/TicketTransaction/TicketTransaction';
 import ViewTicketTransaction from './BottomNavigation/TicketTransaction/ViewTicketTransaction';
-import SearchTravel from './BottomNavigation/BookingProcedure/SearchTravel';
-import BookTicketFillup from './BottomNavigation/BookingProcedure/BookTicketFillup';
-import PaymentProcess from './BottomNavigation/BookingProcedure/PaymentProcess';
+import MedallionSearchTravel from './BottomNavigation/BookingProcedure/Medallion/MedallionSearchTravel';
+import BookTicketFillup from './BottomNavigation/BookingProcedure/Medallion/BookTicketFillup';
+import PaymentProcess from './BottomNavigation/BookingProcedure/Medallion/PaymentProcess';
 
 //CSS
 import styles from './assets/css/AppStyle';
 
 const LogoImage = require('./assets/images/LOGO.png');
 
-export const AuthContext = React.createContext();
+// const FlashScreen = ({ navigation, isLoggedIn }) => {
+//   const delay = 4000;
 
-const FlashScreen = ({ navigation }) => {
-  const delay = 4000; 
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       if (isLoggedIn) {
+//         navigation.navigate('Dashboard');
+//       } else {
+//         navigation.navigate('GetStarted');
+//       }
+//     }, delay);
 
-  setTimeout(() => {
-    navigation.navigate('GetStarted');
-  }, delay);
+//     return () => clearTimeout(timeout);
+//   }, []);
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <View style={styles.imagecontainer}>
+//         <Image source={LogoImage} style={styles.image} />
+//       </View>
+//       <StatusBar style="auto" />
+//     </SafeAreaView>
+//   );
+// };
+
+// const FlashScreen = ({ navigation, isLoggedIn }) => {
+//   const [isLoading, setIsLoading] = useState(true);
+//   const delay = 4000;
+
+//   useEffect(() => {
+//     setIsLoading(false);
+//   }, [isLoggedIn]);
+
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       if (!isLoading && isLoggedIn) {
+//         navigation.navigate('Dashboard');
+//       } else if (!isLoading && !isLoggedIn) {
+//         navigation.navigate('GetStarted');
+//       }
+//     }, delay);
+
+//     return () => clearTimeout(timeout);
+//   }, [isLoading, isLoggedIn]);
+
+//   if (isLoading) {
+//     return (
+//       <SafeAreaView style={styles.container}>
+//         <ActivityIndicator size="large" color="blue" />
+//       </SafeAreaView>
+//     );
+//   }
+const FlashScreen = ({ navigation, isLoggedIn }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(isLoggedIn);
+  const delay = 4000;
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    setIsAuthenticated(isLoggedIn);
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      // If the `isAuthenticated` prop is undefined, set it to `false`.
+      if (isAuthenticated === undefined) {
+        setIsAuthenticated(false);
+      }
+
+      if (!isLoading && isAuthenticated) {
+        navigation.navigate('Dashboard', { isAuthenticated });
+      } else if (!isLoading && !isAuthenticated) {
+        navigation.navigate('GetStarted');
+      }
+    }, delay);
+
+    return () => clearTimeout(timeout);
+  }, [isLoading, isAuthenticated]);
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="blue" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imagecontainer}>
-        <Image source ={LogoImage} style={styles.image}/>  
-      </View> 
+        <Image source={LogoImage} style={styles.image} />
+      </View>
       <StatusBar style="auto" />
     </SafeAreaView>
   );
-}
+};
+
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState(null);
+
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, []);
+
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('isLoggedIn');
+  //     console.log('Value from AsyncStorage:', value);
+  //     if (value !== null && value === 'true') {
+  //       setIsLoggedIn(true);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //     console.log('isLoggedIn state:', isLoggedIn);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('isLoggedIn');
+  //     console.log('Value from AsyncStorage:', value);
+  //     if (value !== null && value === 'true') {
+  //       setIsLoggedIn(true);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //     console.log('isLoggedIn state:', !isLoggedIn);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('isLoggedIn');
+  //     console.log('Value from AsyncStorage:', value);
+  //     if (value !== null && value === 'true') {
+  //       setIsLoggedIn(true);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //     await AsyncStorage.setItem('isLoggedIn', 'true'); // Set the value to 'true' in AsyncStorage
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  
+  // useEffect(() => {
+  //   checkLoginStatus().then(() => {
+  //   });
+  // }, []);
+  
+  // useEffect(() => {
+  //   console.log('isLoggedIn state:', isLoggedIn);
+  // }, [isLoggedIn]);
+
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, []);
+
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('isLoggedIn');
+  //     console.log('Value from AsyncStorage:', value);
+  //     if (value !== null && value === 'true') {
+  //       setIsLoggedIn(true);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //     console.log('isLoggedIn state:', isLoggedIn);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+useEffect(() => {
+  checkLoginStatus();
+}, []);
 
   useEffect(() => {
-    checkLoginStatus();
-  }, []);
+    console.log('isLoggedIn state:', isLoggedIn);
+  }, [isLoggedIn]);
 
   const checkLoginStatus = async () => {
     try {
       const value = await AsyncStorage.getItem('isLoggedIn');
-      if (value !== null) {
+      console.log('Value from AsyncStorage:', value);
+      if (value !== null && value === 'true') {
         setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
       }
     } catch (error) {
       console.log(error);
-    } finally {
-      setIsLoading(false);
     }
   };
-
-  if (isLoading) {
-    return <ActivityIndicator />;
-  }
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('isLoggedIn');
+  //     console.log('Value from AsyncStorage:', value);
+  //     if (value !== null && value === 'true') {
+  //       setIsLoggedIn(true);
+  //       const token = await AsyncStorage.getItem('token');
+  //       setToken(token);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //       setToken(null);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (    
     <NavigationContainer ref={navigationRef}>
-        <AuthProvider>
+      <AuthProvider>
         <Stack.Navigator>
-              <Stack.Screen name="FlashScreen" component={FlashScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="GetStarted" component={GetStarted} options={{ headerShown: false }} />
-              <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
-              <Stack.Screen name="SignUp" component={SignUp} options={{ headerTitle: "         Let's Sign Up" }} />
-              <Stack.Screen name="Verification" component={Verification} options={{ headerTitle: '' }} />
+          {/* <Stack.Screen name="FlashScreen" component={FlashScreen} options={{ headerShown: false }} /> */}
+          <Stack.Screen name="FlashScreen" component={FlashScreen} options={{ headerShown: false }}/>
 
-              {/* BottomNavigation */}
-              <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }} />
-              <Stack.Screen name="AccountInformation" component={AccountInformation} options={{ headerTitle: "      Account Information" }} />
-              <Stack.Screen name="Report" component={Report} options={{ headerTitle: "                Reports" }} />
-              <Stack.Screen name="NotificationMessage" component={NotificationMessage} options={{ headerTitle: "            Notifications" }} />
-              <Stack.Screen name="TicketTransaction" component={TicketTransaction} options={{ headerTitle: "            Ticket Details" }} />
-              <Stack.Screen name="ViewTicketTransaction" component={ViewTicketTransaction} options={{ headerTitle: "            View Ticket" }} />
-              <Stack.Screen name="SearchTravel" component={SearchTravel} options={{ headerTitle: "           Search Travel" }} />
-              <Stack.Screen name="BookTicketFillup" component={BookTicketFillup} options={{ headerTitle: "            Book Ticket" }} />
-              <Stack.Screen name="PaymentProcess" component={PaymentProcess} options={{ headerTitle: "        Payment Process" }} />
+          <Stack.Screen name="GetStarted" component={GetStarted} options={{ headerShown: false }} />
+          <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
+          <Stack.Screen name="SignUp" component={SignUp} options={{ headerTitle: "         Let's Sign Up" }} />
+          <Stack.Screen name="Verification" component={Verification} options={{ headerTitle: '' }} />
+
+          {/* BottomNavigation */}
+          <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
+          <Stack.Screen name="AccountInformation" component={AccountInformation} options={{ headerTitle: "      Account Information" }} />
+          <Stack.Screen name="Report" component={Report} options={{ headerTitle: "                Reports" }} />
+          <Stack.Screen name="NotificationMessage" component={NotificationMessage} options={{ headerTitle: "            Notifications" }} />
+          <Stack.Screen name="TicketTransaction" component={TicketTransaction} options={{ headerTitle: "            Ticket Details" }} />
+          <Stack.Screen name="ViewTicketTransaction" component={ViewTicketTransaction} options={{ headerTitle: "            View Ticket" }} />
+          <Stack.Screen name="Medallion" component={MedallionSearchTravel} options={{ headerTitle: "              Medallion" }} />
+          <Stack.Screen name="BookTicketFillup" component={BookTicketFillup} options={{ headerTitle: "            Book Ticket" }} />
+          <Stack.Screen name="PaymentProcess" component={PaymentProcess} options={{ headerTitle: "        Payment Process" }} />
         </Stack.Navigator>
-        </AuthProvider>
-      </NavigationContainer>
+      </AuthProvider>
+    </NavigationContainer>
   );
 };
 

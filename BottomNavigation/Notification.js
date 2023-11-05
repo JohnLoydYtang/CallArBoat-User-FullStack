@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, ScrollView} from "react-native";
+import { AuthContext } from '../AuthContext';
 
 //CSS
 import styles from '../assets/css/BottomNavigationStyle/NotificationStyle';
 
 const Notifications = ({navigation}) => {
+  const { isAuthenticated } = useContext(AuthContext);
+
+  console.log('isAuthenticated:', isAuthenticated);
+
   const notifications = [
     'Notification of Travel cancellation on 06/23/2023 from Roble Inc.',
     'Notification 2',

@@ -13,7 +13,8 @@ export default StyleSheet.create({
     },
     MultipleTextStyle:{
       paddingBottom:50,   
-      marginRight: 150,
+      marginRight: 120,
+      left:40
     },
     InputTextStyle:{
       fontWeight:'bold',

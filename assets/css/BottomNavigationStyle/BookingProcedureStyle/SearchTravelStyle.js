@@ -6,16 +6,7 @@ export default StyleSheet.create({    container: {
       alignItems: 'center',
       justifyContent: 'center',
     },
-    TicketContainer:{
-      backgroundColor: '#4A79E5',
-      width: '90%',
-      height: '20%',
-      borderRadius: 20,
-      marginBottom: 20,
-      marginTop: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
+
     ResultText:{
       fontWeight: 'bold',
       fontSize: 17,
@@ -81,9 +72,10 @@ export default StyleSheet.create({    container: {
     },
     FromText:{
       fontWeight: 'bold',
-      marginRight: 220,
-      color:'white',
-      fontSize: 16,
+      marginRight: 145,
+      fontSize: 20,
+      marginTop: 20,
+      marginBottom: 10,
     },
     ToText:{
       fontWeight: 'bold',
@@ -117,5 +109,10 @@ export default StyleSheet.create({    container: {
     SelectedValueStyle:{
       color:'white',
       fontWeight:'bold',
-    }
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   });

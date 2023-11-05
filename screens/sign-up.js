@@ -74,7 +74,7 @@ const SignUp = ({ navigation }) => {
       // Set the display name for the user
       await updateProfile(auth.currentUser, {
         displayName: name,
-        phoneNumber: number
+        phoneNumber: number,
       });
       
       // Access the 'users' collection
@@ -90,6 +90,7 @@ const SignUp = ({ navigation }) => {
         password: password,
       });
       
+      console.log('Data saved successfully'); // Add this console.log statement
 
       // Navigate to the verification screen or any other screen
       navigation.navigate('SignIn');
