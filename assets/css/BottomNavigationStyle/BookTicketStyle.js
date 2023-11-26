@@ -12,6 +12,7 @@ export default StyleSheet.create({
       justifyContent: 'center',
       marginBottom: 10,
       marginTop: 15,
+      
     },
     cardRow: {
       flexDirection: 'row', 

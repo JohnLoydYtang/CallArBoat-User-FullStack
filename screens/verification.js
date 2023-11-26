@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { StatusBar, StyleSheet, KeyboardAvoidingView, Image, Text, TouchableOpacity, View, TextInput} from "react-native";
 import { useRoute } from '@react-navigation/native';
+import { getAuth, applyActionCode } from 'firebase/auth';
 
 //CSS
 import styles from '../assets/css/screensStyle/verificationStyle';
@@ -9,9 +10,10 @@ const getVerification = require('../assets/images/verification.png');
 
 const Verification = ({ navigation }) => {
   const route = useRoute();
-  const phoneNumber = route.params?.phoneNumber;
   
-    const [code, setCode] = useState('');
+  const email = route.params?.email;
+  
+  const [code, setCode] = useState('');
   const codeInputs = useRef([]);
 
   const handleCodeChange = (index, value) => {
@@ -23,6 +25,23 @@ const Verification = ({ navigation }) => {
       codeInputs.current[index + 1].focus();
     }
   };
+
+  const handleVerification = async () => {
+    try {
+      const auth = getAuth(); // Initialize the auth object
+  
+      // Verify the user's email with the entered code
+      await applyActionCode(auth, code);
+  
+      console.log('Email verified successfully');
+  
+      // Navigate to the dashboard or any other screen
+      navigation.navigate('Dashboard');
+    } catch (error) {
+      console.error('Error verifying email:', error);
+    }
+  };
+  
     return (
         <KeyboardAvoidingView keyboardVerticalOffset={100} style={styles.container}>
 
@@ -31,7 +50,7 @@ const Verification = ({ navigation }) => {
         </View>
 
             <Text style={styles.TextCommon}>Verification Code</Text>
-            <Text> Please Enter code sent {'\n'} to {phoneNumber}</Text>
+            <Text> Please Enter code sent {'\n'} to {email}</Text>
 
             <View style={styles.LineContainer}>
         {Array.from({ length: 4 }).map((_, index) => (
@@ -48,9 +67,10 @@ const Verification = ({ navigation }) => {
         
             <StatusBar style="auto" />
 
-            <TouchableOpacity style={styles.ButtonDesign} onPress={() => navigation.navigate('Dashboard')}>
-                <Text style={styles.buttonText}>Verify</Text>
+            <TouchableOpacity style={styles.ButtonDesign} onPress={() => handleVerification()}>
+              <Text style={styles.buttonText}>Verify</Text>
             </TouchableOpacity>
+
 
             <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
                 <Text style={styles.text2}>Resend Code</Text>

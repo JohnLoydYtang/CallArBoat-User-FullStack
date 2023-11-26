@@ -3,7 +3,7 @@ import { View, ScrollView, TouchableOpacity, Text, Image, ActivityIndicator, Ref
 import { Picker } from '@react-native-picker/picker';
 import { AuthContext } from '../AuthContext';
 import {db} from '../firebaseConfig';
-import { collection, getDocs, where, query  } from 'firebase/firestore';
+import { collection, getDocs, where, query, orderBy  } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAuth } from '@firebase/auth';
 
@@ -18,9 +18,6 @@ const History = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   console.log('isAuthenticated:', isAuthenticated);
-
-  const [selectedValue, setSelectedValue] = useState('Latest');
-
   // useEffect(() => {  
   //   const auth = getAuth();
   //   const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -83,7 +80,7 @@ const History = ({navigation}) => {
       if (user) {
         const userId = user.uid;
         const NotifRef = collection(db, 'Medallion-BookedTicket');
-        const MedallionRef = collection(db, 'Medallion');
+        const VesselRef = collection(db, 'Vessel_Route');
 
         const q = query(NotifRef, where('user', '==', userId));
 
@@ -105,7 +102,7 @@ const History = ({navigation}) => {
           })
 
         //Fetch image from medallion
-        getDocs(MedallionRef)
+        getDocs(VesselRef)
           .then((snapshot) => {
             let Medallion = []
             snapshot.docs.forEach((doc) => {
@@ -134,16 +131,8 @@ const History = ({navigation}) => {
     fetchData();
     setRefreshing(false);
   };
-  const filterByDate = (selectedValue) => {
-    // Logic to filter the data based on the selected value
-    if (selectedValue === 'Latest') {
-      // Filter the data to show the latest dates
-    } else if (selectedValue === 'Old') {
-      // Filter the data to show the oldest dates
-    }
-  };
   
-  
+
   if (loading) {
     return (    
     <View style={styles.loadingContainer}>
@@ -154,47 +143,34 @@ const History = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.dropdownContainer}>
-      <Picker
-        prompt='Filter Date'
-        selectedValue={selectedValue}
-        onValueChange={(itemValue) => {
-          setSelectedValue(itemValue);
-          filterByDate(itemValue);
-        }}
-      >
-        <Picker.Item label="Latest" value="Latest" />
-        <Picker.Item label="Old" value="Old" />
-      </Picker>
-      </View>
       <ScrollView style={styles.scrollView}refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>       
     {console.log('Transaction:', Transaction)}
-       {Transaction.map((item, index) => {
+       {Transaction.sort((a, b) => new Date(b.DateIssued) - new Date(a.DateIssued)).map((item, index) => {
           // Find the corresponding Medallion document
-          const medallion = Medallion.find(m => m.id === item.MedallionId);
+          const medallion = Medallion.find(m => m.id === item.vesselId);
           // If the Medallion document exists, use its image
           const medallionImage = medallion?.image;
           const medallionPrice = medallion?.Price;
           console.log('Medallion:', medallion);
           console.log('Medallion Image:', medallionImage);
 
-          const date = item.Date.toDate();
+          const date = item.dateIssued.toDate();
           // Format the Date object as a string
           const dateString = date.toLocaleDateString();
 
           return (
-            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice})}>
+            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice })}>
               <View style={styles.TransactionContent}>
               {medallionImage ? 
             <Image source={{uri: medallionImage}} style={styles.image}/> : 
             <Text>No image</Text>
                }
                 <View style={styles.textContainer}>
-                  <Text style={styles.TransactionName}>{item.Destination}</Text>
+                  <Text style={styles.TransactionName}>{item.Destination} to {item.Location}</Text>
                   <Text style={styles.TransactionDesc}>{item.AccomType}</Text>
-                  <Text style={styles.dateText}>Date: {dateString}</Text>
-                  {item.scanned ? <Text style={styles.scannedText}>Scanned</Text> : <Text style={styles.notScannedText}>Not Scanned</Text>} 
+                  <Text style={styles.dateText}>Date issued: {dateString}</Text>
+                  {item.scanned ? <Text style={styles.approvedText}>{item.status}</Text> : <Text style={styles.pendingText}>{item.status}</Text>} 
                 </View>
               </View>
             </TouchableOpacity>

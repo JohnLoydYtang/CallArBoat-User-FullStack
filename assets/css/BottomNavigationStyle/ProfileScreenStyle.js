@@ -42,6 +42,20 @@ export default StyleSheet.create({
       marginLeft: 330,
       width: 200,
     },
+    emailVerified: {
+      color: 'white',
+      fontSize: 15,
+      marginLeft: 330,
+      width: 200,
+      fontWeight:'bold'
+    },
+    emailNotVerified: {
+      color: 'white',
+      fontSize: 15,
+      marginLeft: 330,
+      width: 200,
+      fontWeight:'bold'
+    },
      detailsContainer: {
       width: 400,
       borderTopWidth: 1,

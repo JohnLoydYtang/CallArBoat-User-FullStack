@@ -56,5 +56,9 @@ export default StyleSheet.create({
       justifyContent: 'center',
       borderRadius: 25,
     },
+    singleitem:{
+      marginLeft:30,
+      marginTop:6,
+    }
   });
   

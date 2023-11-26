@@ -2,7 +2,8 @@ import { db } from '../firebaseConfig';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { StatusBar, KeyboardAvoidingView, TextInput, Text, TouchableOpacity, Modal, View} from "react-native";
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification  } from 'firebase/auth';
+import { Alert } from 'react-native';
 
 //CSS
 import styles from '../assets/css/screensStyle/sign-upStyle';
@@ -87,9 +88,15 @@ const SignUp = ({ navigation }) => {
         phoneNumber: number, // Use the correct variable name here
         username: username,
         email: email,
-        password: password,
+        //Firebase Authentication provides built-in functionality for hashing passwords before storing them securely.
+        //You can use the createUserWithEmailAndPassword method to create a new user with an email and password, 
+        //and Firebase will automatically handle the password hashing for you.
+        // password: password,
       });
-      
+
+      await sendEmailVerification(auth.currentUser);
+      alert('Email Sent successfully.');
+
       console.log('Data saved successfully'); // Add this console.log statement
 
       // Navigate to the verification screen or any other screen

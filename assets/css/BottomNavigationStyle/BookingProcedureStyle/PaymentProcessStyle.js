@@ -9,10 +9,11 @@ export default StyleSheet.create({
     TitleTextStyle:{
       fontWeight:'bold',
       fontSize: 20,
-      marginBottom: 30,
+      marginBottom: 13,
+      marginTop:10,
     },
     MultipleTextStyle:{
-      paddingBottom:50,   
+      paddingBottom:8,   
       marginRight: 120,
       left:40
     },
@@ -43,7 +44,7 @@ export default StyleSheet.create({
       borderBottomLeftRadius: 5,
       borderTopLeftRadius: 5,  
       marginBottom: 10,
-      width: 280,
+      width: 290,
       height: 60,
       overflow: 'hidden',
         backgroundColor: 'white',
@@ -90,5 +91,42 @@ export default StyleSheet.create({
       top: 10,
       fontSize: 19,
     },
+    
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+ modalView: {
+   margin: 20,
+   backgroundColor: "white",
+   borderRadius: 20,
+   padding: 35,
+   alignItems: "center",
+   shadowColor: "#000",
+   shadowOffset: {
+     width: 0,
+     height: 2
+   },
+   shadowOpacity: 0.25,
+   shadowRadius: 4,
+   elevation: 5
+ },
+ openButton: {
+   backgroundColor: "#F194FF",
+   borderRadius: 20,
+   padding: 10,
+   elevation: 2
+ },
+ textStyle: {
+   color: "white",
+   fontWeight: "bold",
+   textAlign: "center"
+ },
+ modalText: {
+   marginBottom: 15,
+   textAlign: "center"
+ }
   });
   

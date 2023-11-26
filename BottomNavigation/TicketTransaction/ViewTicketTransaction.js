@@ -10,7 +10,7 @@ const QrCodeImage = require('../../assets/images/qrcode.png');
 
 const ViewTicketTransaction = ({navigation}) => {
     const route = useRoute();
-    const { item, medallionPrice } = route.params;
+    const { item, medallionPrice, companyItem } = route.params;
 
             
     const date = item.Date.toDate();
@@ -24,15 +24,14 @@ const ViewTicketTransaction = ({navigation}) => {
         <View style={styles.TicketContainer}>
         </View>
         <View style={styles.TicketDetails}>
-            <Text style={styles.CompanyTitle}>COMPANY NAME</Text> 
 
+            <Text style={styles.CompanyTitle}>COMPANY NAME: <Text style={{textDecorationLine: 'underline'}}>{item.companyName}</Text></Text> 
             <View style={styles.Details}>
             <Text style={styles.NameDetails}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text> </Text>
             <Text style={styles.VesselDetails}>Vessel: </Text>
-            <Text style={styles.RouteDetails}>Route: </Text>
+            <Text style={styles.RouteDetails}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.routeName}</Text></Text>
             <Text style={styles.SailDetails}>Sail Date: <Text style={{textDecorationLine: 'underline'}}>{dateString}</Text> </Text>
             <Text style={styles.AccomDetails}>Accom: <Text style={{textDecorationLine: 'underline'}}>{item.AccomType}</Text></Text>
-            <Text style={styles.SeatDetails}>Seat/Bed #: </Text>
             <Text style={styles.SexDetails}>Sex/Age: <Text style={{textDecorationLine: 'underline'}}>{item.Gender}</Text> / <Text style={{textDecorationLine: 'underline'}}>{item.Age}</Text></Text>
             </View>
 
@@ -41,7 +40,8 @@ const ViewTicketTransaction = ({navigation}) => {
             <View style={styles.AdditionalDetails}>
             <Text style={styles.FareDetails}>Fare: <Text style={{textDecorationLine: 'underline'}}>{medallionPrice}</Text></Text>
             <Text style={styles.TicketTypeDetails}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text> </Text>
-            <Text style={styles.DiscountDetails}>Discount: </Text>
+            <Text style={styles.DiscountDetails}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>
+            <Text style={styles.AppDetails}>Status:  <Text style={{textDecorationLine: 'underline'}}>{item.status}</Text></Text>
             <Text style={styles.AppDetails}>App Transac Fee: </Text>
             <Text style={styles.TotalDetails}>Total: </Text>
             <Text style={styles.PaidDetails}>Paid: </Text>

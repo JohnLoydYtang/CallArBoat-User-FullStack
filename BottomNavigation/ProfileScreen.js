@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, Image, ActivityIndicator, RefreshControl,
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../AuthContext';
-import { db } from '../firebaseConfig';
+import { db, auth } from '../firebaseConfig';
 import { collection, doc, getDoc,  getDocs, where, query } from 'firebase/firestore';
 import { getAuth } from '@firebase/auth';
 
@@ -16,7 +16,20 @@ const ProfileScreen = () => {
   const [Transaction, setTransaction] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
+  useEffect(() => {
+    const checkEmailVerification = async () => {
+      if (auth.currentUser) {
+        const user = auth.currentUser;
+        setIsEmailVerified(user.emailVerified);
+      }
+    };
+  
+    checkEmailVerification();
+  }, []);
+
+  
   console.log('isAuthenticated:', isAuthenticated);
 
   useEffect(() => {
@@ -95,10 +108,19 @@ const onRefresh = () => {
         {Transaction.map((item, index) => {
           return (
             <TouchableOpacity key={index} onPress={() => navigation.navigate('AccountInformation', {item})}>
-              <Image source={require('../assets/images/default-profile-picture.png')} style={styles.imageContainer} />
+              {item.profilePicture ? (
+                <Image source={{ uri: item.profilePicture }} style={styles.imageContainer} />
+              ) : (
+                <Image source={require('../assets/images/default-profile-picture.png')} style={styles.imageContainer} />
+              )}
               <View style={styles.overlay}>
                 <Text style={styles.name}>{item.username}</Text>
                 <Text style={styles.number}>{item.phoneNumber}</Text>
+                {isEmailVerified ? (
+                  <Text style={styles.emailVerified}>Email is verified</Text>
+                ) : (
+                  <Text style={styles.emailNotVerified}>Email is not verified</Text>
+                )}
               </View>
             </TouchableOpacity>
           );

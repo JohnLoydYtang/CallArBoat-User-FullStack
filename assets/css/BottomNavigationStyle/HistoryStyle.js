@@ -44,7 +44,7 @@ export default StyleSheet.create({
     TransactionDesc:{
       fontSize: 15,
     },
-    scannedText: {
+    approvedText: {
       backgroundColor: '#D1EED6',
       color: 'green',
       fontSize: 14,
@@ -53,13 +53,13 @@ export default StyleSheet.create({
       padding: 8,
       borderRadius: 10,
     },
-    notScannedText: {
-      backgroundColor: '#FFCFD3',
+    pendingText: {
+      backgroundColor: '#4895ef',
       padding: 8,
       borderRadius: 10,
-      color: 'red',
+      color: 'white',
       fontSize: 14,
       alignSelf:'center',
-      marginRight: 30,
+      marginRight: '70%',
     },
 });

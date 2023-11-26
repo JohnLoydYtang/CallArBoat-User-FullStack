@@ -20,6 +20,7 @@ export default StyleSheet.create({
     TextInputContainer:{
       flexDirection: 'row',
       borderColor: '#000',
+      top:20,
     },
     icon: {
       padding: 10,
@@ -30,8 +31,7 @@ export default StyleSheet.create({
       borderRadius: 75,
       borderWidth: 4,
       borderColor: 'black',
-      marginBottom: 50,
-      marginTop: 100,
+      marginTop: 300,
     },
     TicketContainer:{
       backgroundColor: 'white',
@@ -83,7 +83,8 @@ export default StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: '#4A79E5',
         alignItems: 'center',
-        marginBottom: 60,
+        marginBottom: 260,
+        marginTop:70
       },
       buttonText:{
         color: 'white',

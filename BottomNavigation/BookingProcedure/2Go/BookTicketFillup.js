@@ -112,8 +112,8 @@ const BookTicketFillup = ({navigation}) => {
           AccomType: selectedValueAccom,
           TicketType: selectedValueTicket,
           ImageUrl: imageUrl, // Save the image URL in Firestore
-          vesselId: vesselId, // Save the Vessel id in Firestore
-          routeName: routeName, // Save the route name in Firestore
+          vesselId: vesselId, // Save the Medallion id in Firestore
+          routeName: routeName, // Save the Medallion id in Firestore
           status: "pending", // Add the status field with the value "pending"
           Discount: discount, // Save the discount value in the document
           companyName: companyItem.companyName, // Store only the companyName from companyItem
@@ -121,8 +121,7 @@ const BookTicketFillup = ({navigation}) => {
    
         const firestoreDateString = firestoreDate.toISOString();
 
-        navigation.navigate('PaymentProcess', {    
-          user: user.uid,      
+        navigation.navigate('PaymentProcess', {          
           Name: name,
           Age: age,
           Gender: gender,

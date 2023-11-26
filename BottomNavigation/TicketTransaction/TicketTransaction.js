@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal} from "react-native";
 import { useRoute } from '@react-navigation/native';
-import { collection, getDocs } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 import {db} from '../../firebaseConfig';
 
 //CSS
@@ -16,9 +16,16 @@ const TicketTransaction = ({navigation}) => {
         
         const date = item.Date.toDate();
         const dateString = date.toLocaleDateString();
-      
-        
-        
+
+        const deleteDocument = async (collectionName, documentId) => {
+          try {
+            await deleteDoc(doc(db, collectionName, documentId));
+            console.log('Document successfully deleted!');
+          } catch (error) {
+            console.error('Error removing document: ', error);
+          }
+         };
+          
         const handleNormalCancel = () => {
           setShowPrompt(false);
         };
@@ -27,16 +34,17 @@ const TicketTransaction = ({navigation}) => {
           setShowPrompt(true);
         };
 
-        const handleConfirmCancel = () => {
+        const handleConfirmCancel = async () => {
           setIsCancelled(true);
           setTimeout(() => {
             setShowPrompt(false);
           }, 5000); //Delay for 5 seconds for cancel picture
-
-          setTimeout(() => {
+         
+          setTimeout(async () => {
+            await deleteDocument('Medallion-BookedTicket', item.id);
             navigation.goBack();
           }, 2000); // Delay for 1 seconds before closing the modal and navigating back 
-        };
+         };
 
         useEffect(() => {
           let timeoutId;
@@ -61,14 +69,13 @@ const TicketTransaction = ({navigation}) => {
             <View style={styles.textContainer}>
             <Text style={styles.textStyle}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text></Text>
             <Text style={styles.textStyle}>Vessel:</Text>
-            <Text style={styles.textStyle}>Route:</Text>
+            <Text style={styles.textStyle}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.routeName}</Text></Text>
             <Text style={styles.textStyle}>Sail Date: <Text style={{textDecorationLine: 'underline'}}>{dateString}</Text></Text>
             <Text style={styles.textStyle}>Accom: <Text style={{textDecorationLine: 'underline'}}>{item.AccomType}</Text></Text>
-            <Text style={styles.textStyle}>Seat/Bed#:</Text>
             <Text style={styles.textStyle}>Sex/Age: <Text style={{textDecorationLine: 'underline'}}>{item.Gender}</Text> / <Text style={{textDecorationLine: 'underline'}}>{item.Age}</Text></Text>
             <Text style={styles.textStyle}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text></Text>
-            <Text style={styles.textStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>{medallionPrice}</Text></Text>
-            <Text style={styles.textStyle}>Discount:</Text>
+            <Text style={styles.textStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>₱{medallionPrice}</Text></Text>
+            <Text style={styles.textStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>            
             <Text style={styles.textStyle}>App Transac Fee:</Text>
             <Text style={styles.textStyle}>Total:</Text>
             <Text style={styles.paidStyle}>Paid:</Text>

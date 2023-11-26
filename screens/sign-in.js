@@ -100,7 +100,7 @@ const SignIn = ({navigation}) => {
                 <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                 <Text style={styles.text1}>Forgot Your Password?</Text>
             </TouchableOpacity>
 

@@ -4,6 +4,9 @@ import { View, Image, Text, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../AuthContext';
 import { auth } from '../firebaseConfig'; // Replace '../firebase' with the path to your Firebase configuration file
+import { getAuth } from '@firebase/auth';
+import { collection, doc, getDoc,  getDocs, where, query, onSnapshot  } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 //BOTTOM NAVIGATION
 import BookTicket from './BookTicket';
@@ -19,45 +22,122 @@ const dashboardImage = require('../assets/images/dashboard.png');
 
 const HomeScreen = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [Transaction, setTransaction] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [bookedTickets, setBookedTickets] = useState([]);
+  const [Medallion, setMedallion] = useState([]);
+  const [singleTicket, setSingleTicket] = useState(null);
 
   useEffect(() => {
+    fetchData();
+  }, []);
+  
+  const fetchData = () => {
+    const auth = getAuth();
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsAuthenticated(user !== null);
       if (user) {
-        setUserName(user.displayName);
+        const userId = user.uid;
+        const NotifRef = collection(db, 'Passengers');
+        const DisplayRef = collection(db, 'Medallion-BookedTicket');
+  
+        const q = query(NotifRef, where('userID', '==', userId));
+  
+        const unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+          let Transaction = [];
+          snapshot.docs.forEach((doc) => {
+            Transaction.push({ ...doc.data(), id: doc.id });
+          });
+          setTransaction(Transaction);
+          setLoading(false);
+          if (Transaction.length === 0) {
+            console.log('No matching documents found in Firestore');
+          }
+        });
+        return () => {
+          unsubscribeSnapshot();
+          unsubscribe();
+        };
+      } else {
+        console.log('User not logged in');
+        setLoading(false);
       }
     });
+  };
 
-    return () => unsubscribe();
-  }, []);
-
+  const fetchBookedTickets = () => {
+    const auth = getAuth();
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userId = user.uid;
+        const DisplayRef = collection(db, 'Medallion-BookedTicket');
+   
+        const q = query(DisplayRef, where('user', '==', userId));
+   
+        const unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+          let bookedTickets = [];
+          snapshot.docs.forEach((doc) => {
+            bookedTickets.push({ ...doc.data(), id: doc.id });
+          });
+          setBookedTickets(bookedTickets);
+          setLoading(false);
+          if (bookedTickets.length === 0) {
+            console.log('No matching documents found in Firestore');
+          }
+        });
+        return () => {
+          unsubscribeSnapshot();
+          unsubscribe();
+        };
+      } else {
+        console.log('User not logged in');
+        setLoading(false);
+      }
+    });
+   };
+   useEffect(() => {
+    fetchData();
+    fetchBookedTickets();
+   }, []);
+   
   return (
     <View style={styles.screenContainer}>
       <View style={styles.imagecontainer}>
         <Image source={dashboardImage} style={styles.image} />
         <View style={styles.overlay}>
           <Text style={styles.text1}>Good Day,</Text>
-          {isAuthenticated && <Text style={styles.text2}>{userName}</Text>}
+            {console.log('Transaction:', Transaction)}
+            {Transaction.map((item, index) => (
+            <Text key={index} style={styles.text2}>{item.name}</Text>
+            ))}
         </View>
       </View>
       <View style={styles.overlay}>
-        <View style={styles.TicketContainer}>
-        </View>
+      <View style={styles.TicketContainer}>
+        {bookedTickets.length > 0 && (
+          <View style={styles.singleitem}>
+            <Text>Name: {bookedTickets[bookedTickets.length - 1].Name}</Text>
+            <Text>Destination: {bookedTickets[bookedTickets.length - 1].Destination}</Text>
+            <Text>Location: {bookedTickets[bookedTickets.length - 1].Location}</Text>
+            <Text>Sail Date: {new Date(bookedTickets[bookedTickets.length - 1].Date.toDate()).toLocaleDateString()}</Text>
+            <Text>Status: {bookedTickets[bookedTickets.length - 1].status}</Text>
+          </View>
+        )}
+      </View>
       </View>
       <View style={styles.overlay}>
       <Text style={styles.Recent}>Recent Trip</Text>
       <ScrollView horizontal>
-          <View style={styles.card}>
-            <Text>Card 1</Text>
-          </View>
-          <View style={styles.card}>
-            <Text>Card 2</Text>
-          </View>
-          <View style={styles.card}>
-            <Text>Card 3</Text>
-          </View>
-        </ScrollView>
+      {console.log('medallion booked ticket:', bookedTickets)}
+      {bookedTickets.reverse().slice(0, 5).map((ticket, index) => (
+      <View style={styles.card} key={index}>
+        <Text>Name: {ticket.Name}</Text>
+        <Text>Destination: {ticket.Destination}</Text>
+        <Text>Location: {ticket.Location}</Text>
+        <Text>Sail Date: {new Date(ticket.Date.toDate()).toLocaleDateString()}</Text>
+        <Text>Status: {ticket.status}</Text>
+      </View>
+        ))} 
+      </ScrollView>
       </View>
     </View>
   );

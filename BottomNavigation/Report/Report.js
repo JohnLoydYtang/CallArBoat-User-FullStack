@@ -3,29 +3,30 @@ import { TextInput, View, Text, TouchableOpacity} from "react-native";
 import { getAuth } from 'firebase/auth';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
+import { Alert } from 'react-native';
 
 //CSS
 import styles from '../../assets/css/BottomNavigationStyle/Report/ReportStyle';
 
 const Report = ({navigation}) => {
-    const [Name, onChangeText] = React.useState('');
-    const [Message, onChangeMessage] = React.useState('');
-    const [nameError, setNameError] = useState('');
+    const [message, onChangeText] = React.useState('');
+    const [Title, onChangeMessage] = React.useState('');
     const [messageError, setMessageError] = useState('');
+    const [titleError, setTitleError] = useState('');
     const [error, setError] = useState('');
 
     const handleReport = async () => {
-        setNameError('');
         setMessageError('');
+        setTitleError('');
         setError('');
     
-        if (Name.trim() === '') {
-          setNameError('                      Please subject of the report');
+        if (message.trim() === '') {
+          setMessageError('                      Please subject of the report');
           return;
         }
     
-        if (Message.trim() === '') {
-          setMessageError('                      Message cannot be empty!');
+        if (Title.trim() === '') {
+          setTitleError('                      Message cannot be empty!');
           return;
         }
     
@@ -39,8 +40,20 @@ const Report = ({navigation}) => {
               // Add a new document with a generated ID
               await setDoc(doc(usersCollection), {
                 reportID: user.uid, // Store the user's ID in the document
-                rep_message: Name,
-                subject_rep: Message,
+                rep_message: message,
+                subject_rep: Title,
+              }).then(() => {
+                // After the document is added, show an alert
+                Alert.alert(
+                  "Document Added",
+                  "Document has been added successfully.",
+                  [
+                    {
+                      text: "OK",
+                      onPress: () => console.log("OK Pressed"),
+                    },
+                  ]
+                );
               });
         
               // Navigate to the verification screen or any other screen
@@ -60,11 +73,11 @@ const Report = ({navigation}) => {
 
             <Text style={styles.Text}>Subject for report:</Text>
             {error !== '' && <Text style={styles.error}>{error}</Text>}
-            {nameError !== '' && <Text style={styles.error}>{nameError}</Text>}
+            {messageError !== '' && <Text style={styles.error}>{messageError}</Text>}
             <TextInput
                 style={styles.input}
                 onChangeText={text => onChangeText(text)}
-                value={Name}
+                value={message}
                 placeholder=" "
             />
             
@@ -77,7 +90,7 @@ const Report = ({navigation}) => {
             numberOfLines={5}
             maxLength={200}
             onChangeText={text => onChangeMessage(text)}
-            value={Message}
+            value={Title}
             />
 
         <TouchableOpacity style={styles.ButtonDesign} onPress={handleReport}>

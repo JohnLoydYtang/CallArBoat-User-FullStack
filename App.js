@@ -6,6 +6,7 @@ import { Image, View, SafeAreaView, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { navigationRef } from './rootNavigation';
 import { AuthProvider } from './AuthContext';
+import { getAuth, signInWithCredential, PhoneAuthProvider } from 'firebase/auth';
 
 //SCREENS
 import GetStarted from './screens/getStarted';
@@ -27,6 +28,7 @@ import PaymentProcess from './BottomNavigation/BookingProcedure/Medallion/Paymen
 
 //CSS
 import styles from './assets/css/AppStyle';
+import ForgotPassword from './screens/forgotPassword';
 
 const LogoImage = require('./assets/images/LOGO.png');
 
@@ -137,6 +139,11 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(null);
 
+  const auth = getAuth(); // Initialize the auth object
+  
+  useEffect(() => {
+    auth.useDeviceLanguage();
+  }, []);  
   // useEffect(() => {
   //   checkLoginStatus();
   // }, []);
@@ -258,10 +265,10 @@ useEffect(() => {
         <Stack.Navigator>
           {/* <Stack.Screen name="FlashScreen" component={FlashScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name="FlashScreen" component={FlashScreen} options={{ headerShown: false }}/>
-
           <Stack.Screen name="GetStarted" component={GetStarted} options={{ headerShown: false }} />
           <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
           <Stack.Screen name="SignUp" component={SignUp} options={{ headerTitle: "         Let's Sign Up" }} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerTitle: "         Forgot Password" }} />
           <Stack.Screen name="Verification" component={Verification} options={{ headerTitle: '' }} />
 
           {/* BottomNavigation */}
