@@ -71,7 +71,7 @@ const MedallionSearchTravel = ({navigation}) => {
                     </View>
                     <View style={styles.rowContainer}>
                         <Text style={styles.portStyle}>{item.route_name}</Text>
-                        <Text style={styles.personStyle}>₱{item.Price}</Text>
+                        <Text style={styles.personStyle}>₱{item.fare_price}</Text>
                     </View>
 
                   </View>       

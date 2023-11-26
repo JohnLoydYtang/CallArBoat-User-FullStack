@@ -18,57 +18,6 @@ const History = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   console.log('isAuthenticated:', isAuthenticated);
-  // useEffect(() => {  
-  //   const auth = getAuth();
-  //   const unsubscribe = auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       const userId = user.uid;
-  //       const NotifRef = collection(db, 'Medallion-BookedTicket');
-  //       const MedallionRef = collection(db, 'Medallion');
-
-  //       const q = query(NotifRef, where('user', '==', userId));
-    
-  //       getDocs(q)
-  //         .then((snapshot) => {
-  //           let Transaction = []
-  //           snapshot.docs.forEach((doc) => {
-  //             Transaction.push({ ...doc.data(), id:doc.id })
-  //           })
-  //           setTransaction(Transaction);
-  //           setLoading(false);
-  //           if (Transaction.length === 0) {
-  //             console.log('No matching documents found in Firestore');
-  //           }
-  //         })
-  //         .catch(err => {
-  //           console.log(err.message)
-  //           setLoading(false);
-  //         })
-
-  //         //Fetch image from medallion
-  //         getDocs(MedallionRef)
-  //         .then((snapshot) => {
-  //           let Medallion = []
-  //           snapshot.docs.forEach((doc) => {
-  //             const data = doc.data();
-  //             Medallion.push({ id: doc.id, image: data.image, Price: data.Price })
-  //           })
-  //           console.log('Fetched Medallion:', Medallion);  // Log the fetched Medallion data
-  //           setMedallion(Medallion);
-  //         })
-  //         .catch(err => {
-  //           console.log('Error fetching Medallion:', err.message)  // Log any error messages
-  //         })    
-  //         //End of medallion
-  //     } else {
-  //       console.log('User not logged in');
-  //       setLoading(false);
-  //     }
-  //   });
-
-  //   // Unsubscribe from the listener when the component unmounts
-  //   return () => unsubscribe();
-  // }, []);
 
   useEffect(() => {
     fetchData();
@@ -107,7 +56,7 @@ const History = ({navigation}) => {
             let Medallion = []
             snapshot.docs.forEach((doc) => {
               const data = doc.data();
-              Medallion.push({ id: doc.id, image: data.image, Price: data.Price })
+              Medallion.push({ id: doc.id, image: data.image, Price: data.fare_price })
             })
             console.log('Fetched Medallion:', Medallion);  // Log the fetched Medallion data
             setMedallion(Medallion);
@@ -146,7 +95,7 @@ const History = ({navigation}) => {
       <ScrollView style={styles.scrollView}refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>       
     {console.log('Transaction:', Transaction)}
-       {Transaction.sort((a, b) => new Date(b.DateIssued) - new Date(a.DateIssued)).map((item, index) => {
+       {Transaction.reverse().map((item, index) => {
           // Find the corresponding Medallion document
           const medallion = Medallion.find(m => m.id === item.vesselId);
           // If the Medallion document exists, use its image
@@ -170,8 +119,15 @@ const History = ({navigation}) => {
                   <Text style={styles.TransactionName}>{item.Destination} to {item.Location}</Text>
                   <Text style={styles.TransactionDesc}>{item.AccomType}</Text>
                   <Text style={styles.dateText}>Date issued: {dateString}</Text>
-                  {item.scanned ? <Text style={styles.approvedText}>{item.status}</Text> : <Text style={styles.pendingText}>{item.status}</Text>} 
-                </View>
+                  {item.status === 'Approved' ? 
+                    <Text style={styles.approvedText}>{item.status}</Text> 
+                    : 
+                    item.status === 'Cancelled' ? 
+                    <Text style={styles.cancelledText}>{item.status}</Text> 
+                    : 
+                    <Text style={styles.pendingText}>{item.status}</Text>
+                    }                                  
+                  </View>
               </View>
             </TouchableOpacity>
           )

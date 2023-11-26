@@ -54,7 +54,7 @@ const AccountInformation = ({ navigation }) => {
         return;
       }
       if (Password.trim() === '') {
-        setPasswordError('Please input your password');
+        setError('Please input your password');
         return;
       }
       if (Password.trim().length < 6) {
@@ -231,17 +231,7 @@ const AccountInformation = ({ navigation }) => {
             placeholder={item.email}
         />
         </View>
-
-        {/* <View style={styles.TextInputContainer}>
-        <Icon style={styles.icon} name="envelope" size={39} color="#000"/>
-        <TextInput
-            style={styles.input}
-            onChangeText={text => onChangeNewEmail(text)}
-            value={newEmail}
-            placeholder="New Email"r
-        />
-        </View> */}
-
+        
         <View style={styles.TextInputContainer}>
         <Icon style={styles.icon} name="lock" size={39} color="#000" />
         <TextInput

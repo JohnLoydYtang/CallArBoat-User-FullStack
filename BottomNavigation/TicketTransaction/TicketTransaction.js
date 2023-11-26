@@ -68,7 +68,7 @@ const TicketTransaction = ({navigation}) => {
        }     
             <View style={styles.textContainer}>
             <Text style={styles.textStyle}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text></Text>
-            <Text style={styles.textStyle}>Vessel:</Text>
+            <Text style={styles.textStyle}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vesselName}</Text></Text>
             <Text style={styles.textStyle}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.routeName}</Text></Text>
             <Text style={styles.textStyle}>Sail Date: <Text style={{textDecorationLine: 'underline'}}>{dateString}</Text></Text>
             <Text style={styles.textStyle}>Accom: <Text style={{textDecorationLine: 'underline'}}>{item.AccomType}</Text></Text>
@@ -78,7 +78,7 @@ const TicketTransaction = ({navigation}) => {
             <Text style={styles.textStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>            
             <Text style={styles.textStyle}>App Transac Fee:</Text>
             <Text style={styles.textStyle}>Total:</Text>
-            <Text style={styles.paidStyle}>Paid:</Text>
+            <Text style={styles.paidStyle}>Paid: <Text style={{color:'red'}}>Fully Paid</Text></Text>
         </View>
       </View>
 

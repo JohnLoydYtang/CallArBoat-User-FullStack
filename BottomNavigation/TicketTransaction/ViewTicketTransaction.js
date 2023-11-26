@@ -28,7 +28,7 @@ const ViewTicketTransaction = ({navigation}) => {
             <Text style={styles.CompanyTitle}>COMPANY NAME: <Text style={{textDecorationLine: 'underline'}}>{item.companyName}</Text></Text> 
             <View style={styles.Details}>
             <Text style={styles.NameDetails}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text> </Text>
-            <Text style={styles.VesselDetails}>Vessel: </Text>
+            <Text style={styles.VesselDetails}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vesselName}</Text></Text>
             <Text style={styles.RouteDetails}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.routeName}</Text></Text>
             <Text style={styles.SailDetails}>Sail Date: <Text style={{textDecorationLine: 'underline'}}>{dateString}</Text> </Text>
             <Text style={styles.AccomDetails}>Accom: <Text style={{textDecorationLine: 'underline'}}>{item.AccomType}</Text></Text>
@@ -38,7 +38,7 @@ const ViewTicketTransaction = ({navigation}) => {
             <Text style={styles.DateDetails}>Date issued: <Text style={{textDecorationLine: 'underline'}}>{dateIssuedString}</Text> </Text>
 
             <View style={styles.AdditionalDetails}>
-            <Text style={styles.FareDetails}>Fare: <Text style={{textDecorationLine: 'underline'}}>{medallionPrice}</Text></Text>
+            <Text style={styles.FareDetails}>Fare: ₱<Text style={{textDecorationLine: 'underline'}}>{medallionPrice}</Text></Text>
             <Text style={styles.TicketTypeDetails}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text> </Text>
             <Text style={styles.DiscountDetails}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>
             <Text style={styles.AppDetails}>Status:  <Text style={{textDecorationLine: 'underline'}}>{item.status}</Text></Text>

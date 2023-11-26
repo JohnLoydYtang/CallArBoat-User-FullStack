@@ -89,6 +89,7 @@ const PaymentProcess = ({navigation}) => {
         console.log('After setDoc');
           navigation.navigate('Dashboard'); 
           console.log('Success Saving Data');
+          alert('Payment Success.');
         } else {
           console.log('Error:', error);
           setError('User not authenticated');
@@ -194,15 +195,14 @@ const PaymentProcess = ({navigation}) => {
             <Text style={styles.TitleTextStyle}>Ticket Details:</Text>           
             <View style={styles.MultipleTextStyle}>     
             <Text style={styles.InputTextStyle}>Company Name: <Text style={{textDecorationLine: 'underline'}}>{companyItem.companyName}</Text></Text> 
-            <Text style={styles.InputTextStyle}>User Id: <Text style={{textDecorationLine: 'underline'}}>{user}</Text></Text>
             <Text style={styles.InputTextStyle}>Name: <Text style={{textDecorationLine: 'underline'}}>{name}</Text></Text>
-                <Text style={styles.InputTextStyle}>Vessel:</Text>
+                <Text style={styles.InputTextStyle}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vessel_name}</Text></Text>
                 <Text style={styles.InputTextStyle}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.route_name}</Text></Text>
                 <Text style={styles.InputTextStyle}>Sail Date: <Text style={{textDecorationLine: 'underline'}}>{selectedDate.toLocaleDateString()}</Text></Text>
                 <Text style={styles.InputTextStyle}>Accom: <Text style={{textDecorationLine: 'underline'}}>{selectedValueAccom}</Text></Text>
                 <Text style={styles.InputTextStyle}>Sex/Age: <Text style={{textDecorationLine: 'underline'}}>{gender}</Text> / <Text style={{textDecorationLine: 'underline'}}>{age}</Text></Text>
                 <Text style={styles.InputTextStyle}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{selectedValueTicket}</Text></Text>
-                <Text style={styles.InputTextStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>₱{item.Price}</Text></Text>
+                <Text style={styles.InputTextStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>₱{item.fare_price}</Text></Text>
                 <Text style={styles.InputTextStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{Discount}%</Text></Text>
                 <Text style={styles.InputTextStyle}>App Transac Fee: </Text>
                 <Text style={styles.InputTextStyle}><Text style={{color:'red'}}>Total:</Text></Text>    
@@ -261,8 +261,14 @@ const PaymentProcess = ({navigation}) => {
                   {image && <Image source={{ uri: image }} style={{ marginLeft: 10, width: 200, height: 200 }} />}
             </View>
 
-            <TouchableOpacity style={styles.ButtonDesign} onPress={handlePaymentProcess}>
+            <TouchableOpacity style={styles.ButtonDesign} onPress={handlePaymentProcess} disabled={isLoading}>
+            {isLoading ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="medium" color="white" />
+            </View>
+            ) : ( 
               <Text style={styles.buttonText}>Done</Text>  
+              )}
           </TouchableOpacity>
         </View>
     );

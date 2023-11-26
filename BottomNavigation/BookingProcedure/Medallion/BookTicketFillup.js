@@ -33,6 +33,9 @@ const BookTicketFillup = ({navigation}) => {
   const { item } = route.params;
   console.log('Item:', item);
   const vesselId = route.params.item.id;
+  console.log('vesselname: ', vesselId);
+  const vesselName = route.params.item.vessel_name;
+  console.log('vesselname: ', vesselName);
   const routeName = route.params.item.route_name;
   const { companyItem } = route.params;
   console.log('companyItem:', companyItem);
@@ -98,9 +101,16 @@ const BookTicketFillup = ({navigation}) => {
         if (selectedValueTicket !== 'Regular') {
           discount = 20; // 20% discount for student, senior, and disabled tickets
         }
-   
+        
+         // Create a new document reference with an auto-generated ID
+        const docRef = doc(usersCollection);
+
+        // Generate a unique ID
+        const bookID = docRef.id;
+
         // Add a new document with a generated ID
         await setDoc(doc(usersCollection), {
+          bookID: bookID,
           user: user.uid,
           Date: firestoreDate,
           "dateIssued": new Date(), // Automatically save the current date as the date-issued
@@ -113,6 +123,7 @@ const BookTicketFillup = ({navigation}) => {
           TicketType: selectedValueTicket,
           ImageUrl: imageUrl, // Save the image URL in Firestore
           vesselId: vesselId, // Save the Vessel id in Firestore
+          vesselName: vesselName,
           routeName: routeName, // Save the route name in Firestore
           status: "pending", // Add the status field with the value "pending"
           Discount: discount, // Save the discount value in the document
@@ -297,7 +308,7 @@ const BookTicketFillup = ({navigation}) => {
           <TouchableOpacity style={styles.ButtonDesign} onPress={handleTicketFillup} disabled={isLoading}>
           {isLoading ? (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <ActivityIndicator size="medium" color="gray" />
+              <ActivityIndicator size="medium" color="white" />
             </View>
             ) : (            
               <Text style={styles.buttonText}>Proceed</Text>

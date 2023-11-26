@@ -50,8 +50,8 @@ export default StyleSheet.create({    container: {
     },
     departureStyle:{
       color:'#3A78F2',
-      marginRight: 50,
-      marginLeft: 6,
+      marginRight: 70,
+      marginLeft: 10,
     },
     arrivalStyle:{
       color:'#3A78F2',
@@ -63,8 +63,8 @@ export default StyleSheet.create({    container: {
     },
     portStyle:{
       color:'#3A78F2',
-      marginRight: 70,
-      marginLeft: 28
+      marginRight: 60,
+      marginLeft: 10
     },
     personStyle:{
       color:'#5CB85C',

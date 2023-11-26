@@ -72,26 +72,26 @@ const Report = ({navigation}) => {
         <View style={styles.TicketContainer}>
 
             <Text style={styles.Text}>Subject for report:</Text>
-            {error !== '' && <Text style={styles.error}>{error}</Text>}
             {messageError !== '' && <Text style={styles.error}>{messageError}</Text>}
             <TextInput
-                style={styles.input}
-                onChangeText={text => onChangeText(text)}
-                value={message}
-                placeholder=" "
+              style={styles.input}
+              onChangeText={text => onChangeText(text)}
+              value={message}
+              placeholder=" "
             />
             
             {messageError !== '' && <Text style={styles.error}>{messageError}</Text>}
-            <Text style={styles.Text}>Message:</Text>
+            {titleError !== '' && <Text style={styles.error}>{titleError}</Text>}
             <TextInput
-            style={styles.inputMessage}
-            editable
-            multiline
-            numberOfLines={5}
-            maxLength={200}
-            onChangeText={text => onChangeMessage(text)}
-            value={Title}
+              style={styles.inputMessage}
+              editable
+              multiline
+              numberOfLines={5}
+              maxLength={200}
+              onChangeText={text => onChangeMessage(text)}
+              value={Title}
             />
+            {titleError !== '' && <Text style={styles.error}>{titleError}</Text>}
 
         <TouchableOpacity style={styles.ButtonDesign} onPress={handleReport}>
           <Text style={styles.buttonText}>Submit</Text>
