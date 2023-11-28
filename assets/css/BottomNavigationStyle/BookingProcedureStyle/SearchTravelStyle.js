@@ -51,24 +51,36 @@ export default StyleSheet.create({    container: {
     departureStyle:{
       color:'#3A78F2',
       marginRight: 70,
-      marginLeft: 10,
+      marginLeft: 0,
     },
     arrivalStyle:{
       color:'#3A78F2',
       marginRight: 30,
     },
     portText:{
+      marginRight: 80,
+      marginLeft: 0,
+    },
+    businessText:{
       marginRight: 60,
-      marginLeft: 18,
+    },
+    businessStyle:{
+      color:'#3A78F2',
+      marginRight: 90,
+      marginLeft: 0
     },
     portStyle:{
       color:'#3A78F2',
-      marginRight: 60,
-      marginLeft: 10
+      marginRight: 20,
+      marginLeft: 0
     },
     personStyle:{
       color:'#5CB85C',
       marginRight: 30,
+    },
+    scheduleStyle:{
+      position:'relative',
+      fontWeight:'bold',
     },
     FromText:{
       fontWeight: 'bold',

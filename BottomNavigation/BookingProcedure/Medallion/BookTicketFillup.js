@@ -21,7 +21,7 @@ const BookTicketFillup = ({navigation}) => {
   const [location, setLocation] = useState('');
   const [destination, setDestination] = useState('');
   const [gender, setGender] = useState('Male');
-  const [selectedValueAccom, setSelectedValueAccom] = useState('Economy');
+  const [selectedValueAccom, setSelectedValueAccom] = useState(null); // Set initial state to null
   const [selectedValueTicket, setSelectedValueTicket] = useState('Regular');
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
@@ -33,7 +33,7 @@ const BookTicketFillup = ({navigation}) => {
   const { item } = route.params;
   console.log('Item:', item);
   const vesselId = route.params.item.id;
-  console.log('vesselname: ', vesselId);
+  console.log('vesselid: ', vesselId);
   const vesselName = route.params.item.vessel_name;
   console.log('vesselname: ', vesselName);
   const routeName = route.params.item.route_name;
@@ -41,7 +41,10 @@ const BookTicketFillup = ({navigation}) => {
   console.log('companyItem:', companyItem);
   const { vesselItem } = route.params;
   console.log('vessel Item:', vesselItem);
-
+  const { vesselBusiness } = route.params;
+  console.log('vessel business', vesselBusiness);
+  const { vesselEconomy } = route.params;
+  console.log('vessel economy', vesselEconomy);
 
   const uploadImage = async (imageUri) => {
     const response = await fetch(imageUri);
@@ -107,10 +110,12 @@ const BookTicketFillup = ({navigation}) => {
 
         // Generate a unique ID
         const bookID = docRef.id;
+        const paymentId = docRef.id;
 
         // Add a new document with a generated ID
         await setDoc(doc(usersCollection), {
           bookID: bookID,
+          paymentId: paymentId,
           user: user.uid,
           Date: firestoreDate,
           "dateIssued": new Date(), // Automatically save the current date as the date-issued
@@ -143,6 +148,7 @@ const BookTicketFillup = ({navigation}) => {
           item: item,
           Date: firestoreDateString,
           companyItem: companyItem,
+          paymentId: paymentId,
         });
 
          console.log('Success Saving Data');
@@ -276,8 +282,9 @@ const BookTicketFillup = ({navigation}) => {
                   <Text style={styles.inputTextStyle}>Accom Type:</Text>
                     <View style={styles.dropdownContainer}>
                       <Picker selectedValue={selectedValueAccom} onValueChange={(itemValue) => setSelectedValueAccom(itemValue)}>
-                        <Picker.Item label="BUSINESS" value="Business"/>
-                        <Picker.Item label="ECONOMY" value="Economy"/>
+                      <Picker.Item label="Please Pick Accomodation" />
+                        <Picker.Item label={`ECONOMY: ₱${vesselEconomy}`} value={`ECONOMY: ₱${vesselEconomy}`} />
+                        <Picker.Item label={`BUSINESS: ₱${vesselBusiness}`} value={`BUSINESS: ₱${vesselBusiness}`} />
                       </Picker>
                     </View>
                 </View>

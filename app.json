@@ -8,7 +8,6 @@
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
       "**/*"
-      
     ],
     "ios": {
       "supportsTablet": true
@@ -20,10 +19,16 @@
         "permissions": [
           "SEND_SMS"
         ]
-      }
+      },
+      "package": "com.callarboat.CallArBoat"
     },
     "web": {
       "favicon": "./assets/Icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f37fb237-1b2c-4437-a7c6-19e8699ce7f6"
+      }
     }
   }
 }

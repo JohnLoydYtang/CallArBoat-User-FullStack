@@ -35,4 +35,10 @@ export default StyleSheet.create({
     notificationText: {
       fontSize: 16,
     },
+    textNotif:{
+      fontSize:20,
+      fontWeight:'bold',
+      marginTop:200,
+      marginLeft:70
+    }
 });

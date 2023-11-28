@@ -119,5 +119,16 @@ export default StyleSheet.create({
       },
       image:{
         bottom: 100,
+      },
+      textQr:{
+        transform: [{ rotate: '90deg'}],
+        bottom:20,
+      },
+      qrImage:{
+        height:100,
+        width:100,
+        transform: [{ rotate: '90deg'}],
+        bottom:120,
+        padding:120
       }
 });

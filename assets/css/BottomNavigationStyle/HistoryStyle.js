@@ -19,6 +19,12 @@ export default StyleSheet.create({
       width: '90%',
       padding: 10,
     },
+    textHistory:{
+      fontSize:20,
+      fontWeight:'bold',
+      marginTop:250,
+      marginLeft:90
+    },
     Transaction: {
       marginBottom: 10,
       borderRadius: 10,

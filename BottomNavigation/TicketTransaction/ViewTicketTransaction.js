@@ -10,14 +10,15 @@ const QrCodeImage = require('../../assets/images/qrcode.png');
 
 const ViewTicketTransaction = ({navigation}) => {
     const route = useRoute();
-    const { item, medallionPrice, companyItem } = route.params;
-
+    const { item, medallionPrice, companyItem, total } = route.params;
+    console.log('Item: ', item);
             
     const date = item.Date.toDate();
     const dateString = date.toLocaleDateString();
 
     const dateIssued = item.dateIssued.toDate();
     const dateIssuedString = dateIssued.toLocaleDateString();
+    console.log('image qr', item.qrCodeURL);
 
     return (
     <View style={styles.container}>
@@ -42,16 +43,19 @@ const ViewTicketTransaction = ({navigation}) => {
             <Text style={styles.TicketTypeDetails}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text> </Text>
             <Text style={styles.DiscountDetails}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>
             <Text style={styles.AppDetails}>Status:  <Text style={{textDecorationLine: 'underline'}}>{item.status}</Text></Text>
-            <Text style={styles.AppDetails}>App Transac Fee: </Text>
-            <Text style={styles.TotalDetails}>Total: </Text>
-            <Text style={styles.PaidDetails}>Paid: </Text>
+            <Text style={styles.TotalDetails}>Total: <Text style={{textDecorationLine: 'underline'}}>₱{total?.toFixed(2)}</Text></Text>
+            <Text style={styles.PaidDetails}>Paid: <Text style={{color:'red'}}>Fully Paid</Text></Text>
             </View>
 
         </View>
         <View style={styles.TicketQrCode}>
-        <Text style={styles.QrCode}>Scan Qr Code:</Text>
-          <Image source ={QrCodeImage} style={styles.image}/> 
-        </View>
+            <Text style={styles.QrCode}>Scan Qr Code:</Text>
+            {item.qrCodeURL ? 
+                <Image source={{uri: item.qrCodeURL}} style={styles.qrImage}/>
+                : 
+                <Text style={styles.textQr}>Wait for approval / {'\n'}This is cancelled Ticket</Text>
+            }
+            </View>
     </View>
     );
 };

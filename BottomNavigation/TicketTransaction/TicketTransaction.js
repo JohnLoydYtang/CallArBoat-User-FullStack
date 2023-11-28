@@ -12,7 +12,7 @@ const TicketTransaction = ({navigation}) => {
         const [isCancelled, setIsCancelled] = useState(false);
 
         const route = useRoute();
-        const { item, medallionImage, medallionPrice } = route.params;
+        const { item, medallionImage, medallionPrice, total } = route.params;
         
         const date = item.Date.toDate();
         const dateString = date.toLocaleDateString();
@@ -42,6 +42,7 @@ const TicketTransaction = ({navigation}) => {
          
           setTimeout(async () => {
             await deleteDocument('Medallion-BookedTicket', item.id);
+            await deleteDocument('Payments', item.id); // Delete document from 'Payments' collection
             navigation.goBack();
           }, 2000); // Delay for 1 seconds before closing the modal and navigating back 
          };
@@ -76,8 +77,7 @@ const TicketTransaction = ({navigation}) => {
             <Text style={styles.textStyle}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text></Text>
             <Text style={styles.textStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>₱{medallionPrice}</Text></Text>
             <Text style={styles.textStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>            
-            <Text style={styles.textStyle}>App Transac Fee:</Text>
-            <Text style={styles.textStyle}>Total:</Text>
+            <Text style={styles.textStyle}>Total:  <Text style={{textDecorationLine: 'underline'}}>₱{total?.toFixed(2)}</Text></Text>
             <Text style={styles.paidStyle}>Paid: <Text style={{color:'red'}}>Fully Paid</Text></Text>
         </View>
       </View>
@@ -104,7 +104,7 @@ const TicketTransaction = ({navigation}) => {
         </View>
       </Modal>
 
-            <TouchableOpacity style={styles.viewDesign} onPress={() => navigation.navigate('ViewTicketTransaction', { item, medallionImage, medallionPrice })} >
+            <TouchableOpacity style={styles.viewDesign} onPress={() => navigation.navigate('ViewTicketTransaction', { item, medallionImage, medallionPrice, total })} >
                 <Text style={styles.viewText}>View</Text>
             </TouchableOpacity>
       </View>

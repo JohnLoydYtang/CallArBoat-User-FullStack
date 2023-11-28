@@ -23,7 +23,8 @@ const PaymentProcess = ({navigation}) => {
   const gender = route.params?.Gender;
   const selectedValueAccom = route.params?.AccomType;
   const selectedValueTicket = route.params?.TicketType;
-  const { Discount } = route.params;
+  const paymentId = route.params?.paymentId;
+  const { Discount, VesselValue } = route.params;
   const { item } = route.params;
   const { companyItem} = route.params;
   const [image, setImage] = useState(null);
@@ -67,28 +68,24 @@ const PaymentProcess = ({navigation}) => {
         return;
       }
       try {
-        console.log('Start handlePaymentProcess');
         setIsLoading(true); // Set isLoading to true before starting the data saving process
      
         const auth = getAuth(); // Initialize the auth object
         const user = auth.currentUser; // Get the current user
      
         if (user) {
-          console.log('Before uploadImage');
           const imageUrl = await uploadImage(image); // Upload the image and get the URL
-          console.log('After uploadImage');
 
           const usersCollection = collection(db, 'Payments');
         // Add a new document with a generated ID
-        console.log('Before setDoc');
         await setDoc(doc(usersCollection), {
           user: user.uid,
           Name: name,
           ImageUrl: imageUrl, // Save the image URL in Firestore
+          Total: total, // Save the total price in Firestore
+          paymentId: paymentId,
         });
-        console.log('After setDoc');
           navigation.navigate('Dashboard'); 
-          console.log('Success Saving Data');
           alert('Payment Success.');
         } else {
           console.log('Error:', error);
@@ -104,9 +101,6 @@ const PaymentProcess = ({navigation}) => {
      
 
   const { isAuthenticated } = useContext(AuthContext);
-  // const [paymentMethods, setPaymentMethods] = useState([]);
-
-    console.log('isAuthenticated:', isAuthenticated);
 
     const [images, setImages] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -186,9 +180,7 @@ const PaymentProcess = ({navigation}) => {
         }
       };
     
-      console.log('isloading working:?' ,isLoading); // Log the isLoading state
-      console.log('docref working?',setDoc); // Log the document reference
-      console.log('user workling?',user); // Log the user
+      const total = item.fare_price * (1 - Discount / 100);
 
     return (
         <View style={styles.container}>
@@ -204,8 +196,8 @@ const PaymentProcess = ({navigation}) => {
                 <Text style={styles.InputTextStyle}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{selectedValueTicket}</Text></Text>
                 <Text style={styles.InputTextStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>₱{item.fare_price}</Text></Text>
                 <Text style={styles.InputTextStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{Discount}%</Text></Text>
-                <Text style={styles.InputTextStyle}>App Transac Fee: </Text>
-                <Text style={styles.InputTextStyle}><Text style={{color:'red'}}>Total:</Text></Text>    
+                <Text style={styles.InputTextStyle}><Text style={{color:'red'}}>Please note that you need to manually add the Accom Fee:</Text></Text>
+                <Text style={styles.InputTextStyle}>Total: <Text style={{textDecorationLine: 'underline'}}>₱{total.toFixed(2)}</Text></Text>
             </View>
 
             <Text style={styles.PaymentTextStyle}>Payment Method:</Text>

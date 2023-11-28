@@ -16,8 +16,7 @@ const History = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [Medallion, setMedallion] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-
-  console.log('isAuthenticated:', isAuthenticated);
+  const [Payment, setPayment] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -30,6 +29,7 @@ const History = ({navigation}) => {
         const userId = user.uid;
         const NotifRef = collection(db, 'Medallion-BookedTicket');
         const VesselRef = collection(db, 'Vessel_Route');
+        const totalRef = collection(db, 'Payments');
 
         const q = query(NotifRef, where('user', '==', userId));
 
@@ -58,18 +58,30 @@ const History = ({navigation}) => {
               const data = doc.data();
               Medallion.push({ id: doc.id, image: data.image, Price: data.fare_price })
             })
-            console.log('Fetched Medallion:', Medallion);  // Log the fetched Medallion data
             setMedallion(Medallion);
           })
           .catch(err => {
             console.log('Error fetching Medallion:', err.message)  // Log any error messages
           })
-        //End of medallion
+      //fetch total from Payments
+      getDocs(totalRef)
+        .then((snapshot) => {
+          let Payment = []
+          snapshot.docs.forEach((doc) => {
+            const data = doc.data();
+            Payment.push({id: doc.id, paymentId: data.paymentId ,total:data.Total})
+          })
+          console.log('payment', Payment);
+          setPayment(Payment);
+        })
+        .catch(err => {
+          console.log('error payment', err.message)
+        })
       } else {
         console.log('User not logged in');
         setLoading(false);
       }
-    });
+    })
 
     // Unsubscribe from the listener when the component unmounts
     return () => unsubscribe();
@@ -93,23 +105,32 @@ const History = ({navigation}) => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>       
-    {console.log('Transaction:', Transaction)}
-       {Transaction.reverse().map((item, index) => {
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          {console.log('transaction', Transaction)}  
+          {Transaction.length === 0 ? 
+     <Text style={styles.textHistory}>History is empty!</Text> 
+     :     
+       Transaction.reverse().map((item, index) => {
           // Find the corresponding Medallion document
           const medallion = Medallion.find(m => m.id === item.vesselId);
+          let payment;
+          if (Array.isArray(Payment)) {
+           payment = Payment.find(p => p.paymentId === item.paymentId);
+           console.log(payment);
+          } else {
+           console.log('Payment is not an array');
+          }          
+         
           // If the Medallion document exists, use its image
           const medallionImage = medallion?.image;
           const medallionPrice = medallion?.Price;
-          console.log('Medallion:', medallion);
-          console.log('Medallion Image:', medallionImage);
+          const total = payment?.total;
 
           const date = item.dateIssued.toDate();
           // Format the Date object as a string
           const dateString = date.toLocaleDateString();
-
           return (
-            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice })}>
+            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice, total })}>
               <View style={styles.TransactionContent}>
               {medallionImage ? 
             <Image source={{uri: medallionImage}} style={styles.image}/> : 
@@ -126,7 +147,7 @@ const History = ({navigation}) => {
                     <Text style={styles.cancelledText}>{item.status}</Text> 
                     : 
                     <Text style={styles.pendingText}>{item.status}</Text>
-                    }                                  
+                    }  
                   </View>
               </View>
             </TouchableOpacity>
