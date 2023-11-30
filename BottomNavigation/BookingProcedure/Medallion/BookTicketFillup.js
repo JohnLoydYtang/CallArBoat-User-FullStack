@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { getAuth } from '@firebase/auth';
-import { getFirestore, collection, doc, setDoc, Timestamp, firestore } from "firebase/firestore";
+import { getFirestore, collection, doc, setDoc, Timestamp, firestore,serverTimestamp } from "firebase/firestore";
 import { db } from '../../../firebaseConfig';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useRoute } from '@react-navigation/native';
@@ -118,7 +118,7 @@ const BookTicketFillup = ({navigation}) => {
           paymentId: paymentId,
           user: user.uid,
           Date: firestoreDate,
-          "dateIssued": new Date(), // Automatically save the current date as the date-issued
+          dateIssued: serverTimestamp(),// Automatically save the current date as the date-issued
           Location: item.route_location,
           Destination: item.route_destination,
           Name: name,
@@ -205,9 +205,9 @@ const BookTicketFillup = ({navigation}) => {
             <Text style={styles.Text}>Fill up your ticket details:</Text>
             {error !== '' && <Text style={styles.error}>{error}</Text>}
               <View style={styles.textInputStyle}>
-              <Text style={styles.promptText}>Date:</Text>
+              <Text style={styles.promptText}>Sail Date:</Text>
                 <Pressable onPress={() => setShowDatePicker(true)}>
-                <Icon name="calendar" size={30} marginLeft={150} top={20} color="black" />
+                <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
                   <TextInput
                     value={selectedDate.toDateString()} // Display the selected date in the TextInput
                     editable={false} // Disable direct editing of the TextInput

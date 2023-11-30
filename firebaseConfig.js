@@ -24,7 +24,6 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
     });
     const auth = getAuth(app);
 
-
     export { app, db, auth, authorized, storage };
   // For more information on how to access Firebase in your project,
   // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase

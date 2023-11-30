@@ -81,7 +81,7 @@ const PaymentProcess = ({navigation}) => {
         await setDoc(doc(usersCollection), {
           user: user.uid,
           Name: name,
-          ImageUrl: imageUrl, // Save the image URL in Firestore
+          PaymentImage: imageUrl, // Save the image URL in Firestore
           Total: total, // Save the total price in Firestore
           paymentId: paymentId,
         });

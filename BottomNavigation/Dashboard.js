@@ -105,7 +105,6 @@ const HomeScreen = () => {
         <Image source={dashboardImage} style={styles.image} />
         <View style={styles.overlay}>
           <Text style={styles.text1}>Good Day,</Text>
-            {console.log('Transaction:', Transaction)}
             {Transaction.map((item, index) => (
             <Text key={index} style={styles.text2}>{item.name}</Text>
             ))}
@@ -127,7 +126,6 @@ const HomeScreen = () => {
       <View style={styles.overlay}>
       <Text style={styles.Recent}>Recent Trip</Text>
       <ScrollView horizontal>
-      {console.log('medallion booked ticket:', bookedTickets)}
       {bookedTickets.reverse().slice(0, 5).map((ticket, index) => (
       <View style={styles.card} key={index}>
         <Text>Name: {ticket.Name}</Text>

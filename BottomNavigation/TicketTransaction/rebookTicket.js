@@ -5,15 +5,15 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { getAuth } from '@firebase/auth';
-import { getFirestore, collection, doc, setDoc, Timestamp, firestore } from "firebase/firestore";
-import { db } from '../../../firebaseConfig';
+import { getFirestore, collection, doc, Timestamp, firestore, updateDoc,serverTimestamp } from "firebase/firestore";
+import { db } from '../../firebaseConfig';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useRoute } from '@react-navigation/native';
 
 //CSS
-import styles from '../../../assets/css/BottomNavigationStyle/BookingProcedureStyle/BookTicketFillupStyle';
+import styles from '../../assets/css/BottomNavigationStyle/BookingProcedureStyle/BookTicketFillupStyle';
 
-const BookTicketFillup = ({navigation}) => {
+const RebookTicket = ({navigation}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [name, setName] = useState('');
@@ -21,7 +21,7 @@ const BookTicketFillup = ({navigation}) => {
   const [location, setLocation] = useState('');
   const [destination, setDestination] = useState('');
   const [gender, setGender] = useState('Male');
-  const [selectedValueAccom, setSelectedValueAccom] = useState('Economy');
+  const [selectedValueAccom, setSelectedValueAccom] = useState(null); // Set initial state to null
   const [selectedValueTicket, setSelectedValueTicket] = useState('Regular');
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
@@ -32,13 +32,6 @@ const BookTicketFillup = ({navigation}) => {
   const route = useRoute();
   const { item } = route.params;
   console.log('Item:', item);
-  const vesselId = route.params.item.id;
-  const routeName = route.params.item.route_name;
-  const { companyItem } = route.params;
-  console.log('companyItem:', companyItem);
-  const { vesselItem } = route.params;
-  console.log('vessel Item:', vesselItem);
-
 
   const uploadImage = async (imageUri) => {
     const response = await fetch(imageUri);
@@ -66,107 +59,54 @@ const BookTicketFillup = ({navigation}) => {
     });
     };
    
-  
-   const handleTicketFillup = async () => {
-    setError('');
-   
-    if (name.trim() === '') {
-      setError('Please input name');
-      return;
-    }
-    if (age.trim() === '') {
-      setError('Please input age ');
-      return;
-    }
-    if ((image || '').trim() === '') {
-      setError('Please upload image ');
-      return;
-    }
-    try {
-      setIsLoading(true); // Set isLoading to true before starting the data saving process
-
-      const auth = getAuth(); // Initialize the auth object
-      const user = auth.currentUser; // Get the current user
-  
-      if (user) {
-        const imageUrl = await uploadImage(image); // Upload the image and get the URL
-   
-        const usersCollection = collection(db, 'Medallion-BookedTicket');
-        const firestoreDate = selectedDate; // Use the selectedDate value instead of creating a new Date object
-
-        let discount = 0;
-        if (selectedValueTicket !== 'Regular') {
-          discount = 20; // 20% discount for student, senior, and disabled tickets
+    const handleTicketFillup = async () => {
+        setError('');
+      
+        if ((image || '').trim() === '') {
+          setError('Please upload image ');
+          return;
         }
-   
-        // Add a new document with a generated ID
-        await setDoc(doc(usersCollection), {
-          user: user.uid,
-          Date: firestoreDate,
-          "dateIssued": new Date(), // Automatically save the current date as the date-issued
-          Location: item.route_location,
-          Destination: item.route_destination,
-          Name: name,
-          Age: age,
-          Gender: gender,
-          AccomType: selectedValueAccom,
-          TicketType: selectedValueTicket,
-          ImageUrl: imageUrl, // Save the image URL in Firestore
-          vesselId: vesselId, // Save the Medallion id in Firestore
-          routeName: routeName, // Save the Medallion id in Firestore
-          status: "pending", // Add the status field with the value "pending"
-          Discount: discount, // Save the discount value in the document
-          companyName: companyItem.companyName, // Store only the companyName from companyItem
-        });
-   
-        const firestoreDateString = firestoreDate.toISOString();
-
-        navigation.navigate('PaymentProcess', {          
-          Name: name,
-          Age: age,
-          Gender: gender,
-          AccomType: selectedValueAccom,
-          TicketType: selectedValueTicket,
-          Discount: discount, // Pass the discount value as a prop
-          item: item,
-          Date: firestoreDateString,
-          companyItem: companyItem,
-        });
-
-         console.log('Success Saving Data');
-      } else {
-        setError('User not authenticated');
-      }
-    } catch (error) {
-      console.log(error);
-      setMessageError('Error Booking');
-    } finally {
-      setIsLoading(false); // Set isLoading back to false after the data saving process is complete
-    }
-   };
-  
+      
+        try {
+          setIsLoading(true);
+      
+          const auth = getAuth();
+          const user = auth.currentUser;
+      
+          if (user) {
+            const imageUrl = await uploadImage(image);
+            const usersCollection = collection(db, 'Medallion-BookedTicket');
+      
+            // Assuming item.id is the ID of the document you want to update
+            const docRef = doc(usersCollection, item.id);
+      
+            // Use the document ID to update the specific document
+            await updateDoc(docRef, {
+              Date: selectedDate,
+              dateIssued: serverTimestamp(),
+              ImageUrl: imageUrl,
+              status: "pending", // update the status field with the value "pending"
+            });
+      
+            console.log('Success Updating Data');
+            navigation.goBack(); // Navigate back to the previous screen
+          } else {
+            setError('User not authenticated');
+          }
+        } catch (error) {
+          console.log(error);
+          setMessageError('Error Booking');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+        
    const handleDateChange = (event, date) => {
     setShowDatePicker(false);
     if (date) {
       setSelectedDate(date);
     }
-  };
-
-
-  const handleNameChange = (text) => {
-    setName(text);
-  };
-
-  const handleAgeChange = (text) => {
-    setAge(text);
-  };
-
-  const handleLocationChange = (text) => {
-    setLocation(text);
-  };
-
-  const handleDestinationChange = (text) => {
-    setDestination(text);
   };
 
   const pickImage = async () => {
@@ -184,12 +124,12 @@ const BookTicketFillup = ({navigation}) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.Text}>Fill up your ticket details:</Text>
+            <Text style={styles.Text}>  Update your ticket details:{'\n'}<Text style={{color:'red'}}> (Only the date and Image can be changed)</Text></Text>
             {error !== '' && <Text style={styles.error}>{error}</Text>}
               <View style={styles.textInputStyle}>
-              <Text style={styles.promptText}>Date:</Text>
+              <Text style={styles.promptText}>Sail Date:</Text>
                 <Pressable onPress={() => setShowDatePicker(true)}>
-                <Icon name="calendar" size={30} marginLeft={150} top={20} color="black" />
+                <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
                   <TextInput
                     value={selectedDate.toDateString()} // Display the selected date in the TextInput
                     editable={false} // Disable direct editing of the TextInput
@@ -209,8 +149,8 @@ const BookTicketFillup = ({navigation}) => {
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputTextStyle}>Location:</Text>
                     <TextInput
-                      value={item.route_location}
-                      onChangeText={handleLocationChange}
+                      value={item.Location}
+                      editable={false}
                     />
                 </View>
               </View>
@@ -219,8 +159,8 @@ const BookTicketFillup = ({navigation}) => {
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputTextStyle}>Destination:</Text>
                     <TextInput
-                      value={item.route_destination}
-                      onChangeText={handleDestinationChange}
+                      value={item.Destination}
+                      editable={false}
                     />
                 </View>
               </View>
@@ -229,9 +169,8 @@ const BookTicketFillup = ({navigation}) => {
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputName}>Name:</Text>
                   <TextInput
-                    placeholder="Input your name                                         "
-                    value={name}
-                    onChangeText={handleNameChange}
+                    value={item.Name}
+                    editable={false}
                   />
                 </View>
               </View>
@@ -240,10 +179,8 @@ const BookTicketFillup = ({navigation}) => {
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputTextStyle}>Age:</Text>
                     <TextInput
-                      placeholder="Input your age                                         "
-                      value={age}
-                      onChangeText={handleAgeChange}
-                      keyboardType="numeric"
+                      value={item.Age}
+                      editable={false}
                     />
                 </View>
               </View>
@@ -251,37 +188,29 @@ const BookTicketFillup = ({navigation}) => {
               <View style={styles.rowContainer}>
                 <View style={styles.PickerTextStyle}>
                 <Text style={styles.inputTextStyle}>Gender:</Text>
-                  <View style={styles.dropdownContainer}>
-                  <Picker selectedValue={gender} onValueChange={(itemValue) => setGender(itemValue)}>
-                    <Picker.Item label="MALE" value="Male"/>
-                    <Picker.Item label="FEMALE" value="Female"/>
-                  </Picker>
-                  </View>
+                    <TextInput
+                      value={item.Gender}
+                      editable={false}
+                    />
                 </View>
               </View>
               <View style={styles.rowContainer}>
                 <View style={styles.PickerTextStyle}>
                   <Text style={styles.inputTextStyle}>Accom Type:</Text>
-                    <View style={styles.dropdownContainer}>
-                      <Picker selectedValue={selectedValueAccom} onValueChange={(itemValue) => setSelectedValueAccom(itemValue)}>
-                        <Picker.Item label="BUSINESS" value="Business"/>
-                        <Picker.Item label="ECONOMY" value="Economy"/>
-                      </Picker>
-                    </View>
+                    <TextInput
+                      value={item.AccomType}
+                      editable={false}
+                    />
                 </View>
               </View>
 
               <View style={styles.rowContainer}>
                 <View style={styles.PickerTextStyle}>
                 <Text style={styles.inputTextStyle}>Ticket Type:</Text>
-                  <View style={styles.dropdownContainer}>
-                    <Picker selectedValue={selectedValueTicket} onValueChange={(itemValue) => setSelectedValueTicket(itemValue)}>
-                    <Picker.Item label="REGULAR" value="Regular"/>
-                      <Picker.Item label="STUDENT" value="Student"/>
-                      <Picker.Item label="SENIOR" value="Senior"/>
-                      <Picker.Item label="DISABLED" value="Disabled"/>
-                    </Picker>
-                  </View>
+                    <TextInput
+                      value={item.TicketType}
+                      editable={false}
+                    />
                 </View>
               </View>
 
@@ -296,14 +225,14 @@ const BookTicketFillup = ({navigation}) => {
           <TouchableOpacity style={styles.ButtonDesign} onPress={handleTicketFillup} disabled={isLoading}>
           {isLoading ? (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <ActivityIndicator size="medium" color="gray" />
+              <ActivityIndicator size="medium" color="white" />
             </View>
             ) : (            
-              <Text style={styles.buttonText}>Re-Book</Text>
+              <Text style={styles.buttonText}>Update Ticket</Text>
             )}
           </TouchableOpacity>
         </ScrollView>
       );      
 };
 
-export default BookTicketFillup;
+export default RebookTicket;

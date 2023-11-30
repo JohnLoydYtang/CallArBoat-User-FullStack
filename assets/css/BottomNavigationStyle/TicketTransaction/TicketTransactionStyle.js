@@ -12,6 +12,7 @@ export default StyleSheet.create({
       width: 340,
       height: '80%',
       borderRadius: 15,
+      marginTop:5,
     },
     image:{
       height: 130,
@@ -43,7 +44,7 @@ export default StyleSheet.create({
       backgroundColor: 'red',
       alignItems: 'center',
       marginRight:10,
-      marginTop: 30,
+      marginTop: 10,
       marginBottom: 10,
     },
     cancelText:{
@@ -58,7 +59,7 @@ export default StyleSheet.create({
       borderRadius: 5,  
       backgroundColor: '#4A79E5',
       alignItems: 'center',
-      marginTop: 30,
+      marginTop: 10,
     },
     viewText:{
       color: 'white',
@@ -126,5 +127,20 @@ export default StyleSheet.create({
       marginTop: 10,
       width: 100,
       height: 100,
-    }
+    },
+    rebookDesign:{
+      width: 100,
+      height: 40,
+      borderRadius: 10,  
+      overflow: 'hidden',
+      backgroundColor: '#4A79E5',
+      alignItems: 'center',
+      marginLeft:240,
+      marginBottom:5,
+    },
+    rebookText:{
+      color: 'white',
+      marginTop: 10,
+      fontWeight: 'bold',
+    },
 });

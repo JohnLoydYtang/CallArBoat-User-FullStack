@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal} from "react-native";
 import { useRoute } from '@react-navigation/native';
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, updateDoc, addDoc, collection, serverTimestamp} from "firebase/firestore";
 import {db} from '../../firebaseConfig';
 
 //CSS
@@ -12,20 +12,34 @@ const TicketTransaction = ({navigation}) => {
         const [isCancelled, setIsCancelled] = useState(false);
 
         const route = useRoute();
-        const { item, medallionImage, medallionPrice, total } = route.params;
+        const { item, medallionImage, medallionPrice, total, paymentId } = route.params;
         
+        console.log('paymentId', paymentId);
+        console.log('item',item);
+
         const date = item.Date.toDate();
         const dateString = date.toLocaleDateString();
 
-        const deleteDocument = async (collectionName, documentId) => {
+        const updateDocument = async (collectionName, documentId, updateData) => {
           try {
-            await deleteDoc(doc(db, collectionName, documentId));
-            console.log('Document successfully deleted!');
+            const documentRef = doc(db, collectionName, documentId);
+            await updateDoc(documentRef, updateData);
+            console.log('Document successfully updated!');
           } catch (error) {
-            console.error('Error removing document: ', error);
+            console.error('Error updating document: ', error);
           }
-         };
-          
+        };
+        
+        const updatePayment = async (collectionName, documentId, updateData) => {
+          try {
+            const documentRef = doc(db, collectionName, documentId);
+            await updateDoc(documentRef, updateData);
+            console.log('Payment document successfully updated!');
+          } catch (error) {
+            console.error('Error updating payment document: ', error);
+          }
+        };
+
         const handleNormalCancel = () => {
           setShowPrompt(false);
         };
@@ -35,18 +49,38 @@ const TicketTransaction = ({navigation}) => {
         };
 
         const handleConfirmCancel = async () => {
-          setIsCancelled(true);
-          setTimeout(() => {
-            setShowPrompt(false);
-          }, 5000); //Delay for 5 seconds for cancel picture
-         
-          setTimeout(async () => {
-            await deleteDocument('Medallion-BookedTicket', item.id);
-            await deleteDocument('Payments', item.id); // Delete document from 'Payments' collection
-            navigation.goBack();
-          }, 2000); // Delay for 1 seconds before closing the modal and navigating back 
-         };
-
+          try {
+            setIsCancelled(true);
+        
+            // Delay for 5 seconds for cancel picture
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        
+            // Update documents in 'Medallion-BookedTicket' and 'Payments' collections
+            await updateDocument('Medallion-BookedTicket', item.id, { status: 'cancelled by user' });
+            await updatePayment('Payments', paymentId, { status: 'cancelled by user' });
+        
+            // Add Notification with status "cancelled by user"
+            await addDoc(collection(db, 'Notifications'), {
+              type: 'cancellation',
+              status: 'cancelled by user',
+              headerApprove: "Ticket User Cancellation",
+              message:"The user has cancelled the ticket voluntarily.",
+              timestamp: serverTimestamp(),
+              medallionBookedId: item.id, // You'll need to replace this with the actual user ID
+              paymentId: paymentId,
+              userID: item.user,
+            });
+        
+              // Delay for 2 seconds before closing the modal and navigating back
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              console.log('success');
+              setShowPrompt(false);
+              navigation.goBack();
+            } catch (error) {
+              console.error('Error during cancellation: ', error);
+            }
+          };
+          
         useEffect(() => {
           let timeoutId;
         
@@ -59,15 +93,24 @@ const TicketTransaction = ({navigation}) => {
             clearTimeout(timeoutId);
           };
         }, [isCancelled]);
-        
+
+        const dateIssued = item.dateIssued.toDate();
+        const dateIssuedString = dateIssued.toLocaleDateString();    
+
     return (
     <View style={styles.container}>
+        
+        <TouchableOpacity style={styles.rebookDesign} onPress={() => navigation.navigate('RebookTicket', { item})}>
+                <Text style={styles.rebookText}>Re-book</Text>
+        </TouchableOpacity>           
+        
       <View style={styles.TicketContainer}>
       {medallionImage ? 
             <Image source={{uri: medallionImage}} style={styles.image}/> : 
             <Text>No image</Text>
        }     
             <View style={styles.textContainer}>
+            <Text style={styles.textStyle}>Date issued: <Text style={{textDecorationLine: 'underline'}}>{dateIssuedString}</Text> </Text>
             <Text style={styles.textStyle}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text></Text>
             <Text style={styles.textStyle}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vesselName}</Text></Text>
             <Text style={styles.textStyle}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.routeName}</Text></Text>

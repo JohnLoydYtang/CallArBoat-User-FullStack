@@ -9,20 +9,21 @@ export default StyleSheet.create({
     },
     companyName:{
         fontWeight: 'bold',
-        marginTop: 30,
+        marginTop: 20,
         marginLeft: 20,
         fontSize: 20,
     },
     reasonTitle:{
         fontWeight: 'bold',
-        marginLeft: 20,
+        marginLeft: 30,
         fontSize: 15,
+        marginTop:10,
     },
     Content:{
-        marginTop: 20,
         marginLeft: 20,
         fontSize: 18,
         marginBottom: 30,
+        padding:20,
     },
     ButtonDesign:{
         width: 120,
@@ -43,10 +44,10 @@ export default StyleSheet.create({
       TicketContainer:{
         backgroundColor: 'white',
         width: 340,
-        height: '70%',
+        height: '50%',
         borderRadius: 15,
         borderColor: 'white',
-        marginBottom: 140,
+        marginBottom: 300,
       },
       TitleText:{
         fontSize: 15,

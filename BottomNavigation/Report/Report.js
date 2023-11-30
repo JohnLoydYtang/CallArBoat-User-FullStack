@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, View, Text, TouchableOpacity} from "react-native";
 import { getAuth } from 'firebase/auth';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, serverTimestamp  } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 import { Alert } from 'react-native';
 
@@ -36,21 +36,25 @@ const Report = ({navigation}) => {
         
             if (user) {
               const usersCollection = collection(db, 'Reports');
-        
+              
+              const docRef = doc(usersCollection);
+              const reportID = docRef.id;
+
               // Add a new document with a generated ID
               await setDoc(doc(usersCollection), {
-                reportID: user.uid, // Store the user's ID in the document
+                reportID: reportID,
+                userID: user.uid, // Store the user's ID in the document
                 rep_message: message,
                 subject_rep: Title,
+                reportDate: serverTimestamp() // Add the reportDate field
               }).then(() => {
                 // After the document is added, show an alert
                 Alert.alert(
-                  "Document Added",
-                  "Document has been added successfully.",
+                  "Report Successfully Sent",
+                  "Report has been added successfully.",
                   [
                     {
                       text: "OK",
-                      onPress: () => console.log("OK Pressed"),
                     },
                   ]
                 );
@@ -79,7 +83,7 @@ const Report = ({navigation}) => {
               value={message}
               placeholder=" "
             />
-            
+            <Text style={styles.Text}>Content:</Text>
             {messageError !== '' && <Text style={styles.error}>{messageError}</Text>}
             {titleError !== '' && <Text style={styles.error}>{titleError}</Text>}
             <TextInput

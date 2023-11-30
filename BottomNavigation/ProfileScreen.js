@@ -104,7 +104,6 @@ const onRefresh = () => {
     <View style={styles.container}>
       {isAuthenticated ? (
         <View style={styles.profileContainer}>
-        {console.log('Transaction:', Transaction)}
         {Transaction.map((item, index) => {
           return (
             <TouchableOpacity key={index} onPress={() => navigation.navigate('AccountInformation', {item})}>

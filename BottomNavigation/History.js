@@ -125,12 +125,12 @@ const History = ({navigation}) => {
           const medallionImage = medallion?.image;
           const medallionPrice = medallion?.Price;
           const total = payment?.total;
-
+          const paymentId = payment?.id;
           const date = item.dateIssued.toDate();
           // Format the Date object as a string
           const dateString = date.toLocaleDateString();
           return (
-            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice, total })}>
+            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice, total, paymentId })}>
               <View style={styles.TransactionContent}>
               {medallionImage ? 
             <Image source={{uri: medallionImage}} style={styles.image}/> : 
@@ -143,7 +143,10 @@ const History = ({navigation}) => {
                   {item.status === 'Approved' ? 
                     <Text style={styles.approvedText}>{item.status}</Text> 
                     : 
-                    item.status === 'Cancelled' ? 
+                    item.status === 'Cancelled by Agency' ? 
+                    <Text style={styles.cancelledText}>{item.status}</Text> 
+                    : 
+                    item.status === 'cancelled by user' ? 
                     <Text style={styles.cancelledText}>{item.status}</Text> 
                     : 
                     <Text style={styles.pendingText}>{item.status}</Text>
