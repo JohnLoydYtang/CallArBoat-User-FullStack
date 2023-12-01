@@ -14,9 +14,7 @@ import styles from '../../assets/css/BottomNavigationStyle/ProfilePages/AcountIn
 const AccountInformation = ({ navigation }) => {
     const [Name, onChangeText] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
-    const [newEmail, onChangeNewEmail] = React.useState('');
     const [Username, onChangeUsername] = React.useState('');
-    const [Password, onChangePassword] = React.useState('');
     const [Email, onChangeEmail] = React.useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const [error, setError] = useState('');
@@ -53,28 +51,13 @@ const AccountInformation = ({ navigation }) => {
         setError('Please enter a valid email address');
         return;
       }
-      if (Password.trim() === '') {
-        setError('Please input your password');
-        return;
-      }
-      if (Password.trim().length < 6) {
-        setPasswordError('Password should be at least 6 characters');
-        return;
-      }
 
       try {
         const auth = getAuth();
         const user = auth.currentUser;
         console.log('user', user);
         const email = Email.trim();
-   
-        // Check if the email is already in use
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-        if (methods.length > 0) {
-          setError('Email is already in use');
-          return;
-        }
-        
+          
         const passengerRef = doc(db, 'Passengers', item.id);
       
         // Upload the selected image to Firebase Storage
@@ -95,20 +78,16 @@ const AccountInformation = ({ navigation }) => {
           name: Name,
           phoneNumber: number,
           username: Username,
-          // email: Email,
+          email: Email,
         });
-
-        const credential = EmailAuthProvider.credential(auth.currentUser.email,Password);
-        await reauthenticateWithCredential(auth.currentUser, credential);
-        await updateEmail(auth.currentUser, newEmail);
 
         alert('Profile updated successfully.');
 
         navigation.navigate('Profile');
       } catch (error) {
-        // if (error.code === 'auth/operation-not-allowed') {
-        //   alert('Please check your email for verification. Once verified, your profile will be updated successfully.');
-        // } else 
+        if (error.code === 'auth/operation-not-allowed') {
+          alert('Please check your email for verification. Once verified, your profile will be updated successfully.');
+        } else 
         if (error.code === 'auth/too-many-requests') {
           alert('Too many requests. Please try again later.');
         } else {
@@ -221,7 +200,7 @@ const AccountInformation = ({ navigation }) => {
             placeholder={item.username}
         />
         </View>
-
+        <Text style={{marginTop:50, color:'red', fontWeight:'bold'}}>Input your new verified email here!</Text>
         <View style={styles.TextInputContainer}>
         <Icon style={styles.icon} name="envelope" size={39} color="#000"/>
         <TextInput
@@ -232,16 +211,6 @@ const AccountInformation = ({ navigation }) => {
         />
         </View>
         
-        <View style={styles.TextInputContainer}>
-        <Icon style={styles.icon} name="lock" size={39} color="#000" />
-        <TextInput
-          style={styles.input}
-          onChangeText={text => onChangePassword(text)}
-          value={Password}
-          placeholder="Current Password"
-          secureTextEntry={true}
-        />
-      </View>
         <TouchableOpacity style={styles.ButtonDesign} onPress={updateUserAccount}>
           <Text style={styles.buttonText}>UPDATE User Account Information</Text>
         </TouchableOpacity>

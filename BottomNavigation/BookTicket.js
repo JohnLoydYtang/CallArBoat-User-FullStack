@@ -53,8 +53,8 @@ const BookTicket = ({ navigation }) => {
                 onPress={() => navigation.navigate(companyItem.companyName,{ companyItem: companyItem })}
               >
                 <View style={styles.square}>
-                  {companyItem.profile ? (
-                    <Image source={{ uri: companyItem.profile }} style={styles.image} />
+                  {companyItem.agency_profile ? (
+                    <Image source={{ uri: companyItem.agency_profile }} style={styles.image} />
                   ) : (
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                       <ActivityIndicator size="medium" color="gray" />

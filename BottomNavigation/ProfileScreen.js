@@ -129,6 +129,11 @@ const onRefresh = () => {
         <Text>Please log in to view profile</Text>
       )}
       <View style={styles.detailsContainer}>
+
+      <TouchableOpacity onPress={() => navigation.navigate('ChangeEmail')}>
+          <Text style={styles.details}>📧 Change Email</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity>
           <Text style={styles.details}>🔎 About Us</Text>
         </TouchableOpacity>

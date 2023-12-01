@@ -72,8 +72,8 @@ export default StyleSheet.create({
     },
     text2: {
       color: '#4A79E5',
-      marginLeft: 200,
-      bottom: 18,
+      marginLeft: 210,
+      bottom: 21,
     },
     Common: {
       marginBottom: 25,

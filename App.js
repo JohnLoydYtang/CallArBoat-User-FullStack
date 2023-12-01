@@ -30,6 +30,7 @@ import PaymentProcess from './BottomNavigation/BookingProcedure/Medallion/Paymen
 import styles from './assets/css/AppStyle';
 import ForgotPassword from './screens/forgotPassword';
 import RebookTicket from './BottomNavigation/TicketTransaction/rebookTicket';
+import ChangeEmail from './BottomNavigation/changeEmail';
 
 const LogoImage = require('./assets/images/LOGO.png');
 
@@ -133,6 +134,7 @@ useEffect(() => {
           <Stack.Screen name="AccountInformation" component={AccountInformation} options={{ headerTitle: "      Account Information" }} />
           <Stack.Screen name="Report" component={Report} options={{ headerTitle: "                Reports" }} />
           <Stack.Screen name="NotificationMessage" component={NotificationMessage} options={{ headerTitle: "            Notifications" }} />
+          <Stack.Screen name="ChangeEmail" component={ChangeEmail} options={{ headerTitle: "            Change Email" }} />
           <Stack.Screen name="TicketTransaction" component={TicketTransaction} options={{ headerTitle: "            Ticket Details" }} />
           <Stack.Screen name="ViewTicketTransaction" component={ViewTicketTransaction} options={{ headerTitle: "            View Ticket" }} />
           <Stack.Screen name="RebookTicket" component={RebookTicket} options={{ headerTitle: "            Rebook Ticket" }} />
