@@ -55,7 +55,6 @@ const ChangeEmail = ({ navigation }) => {
       if (user) {
         await verifyBeforeUpdateEmail(user, newEmail);
         console.log('Email verification sent. Please check your new email for verification.');
-        navigation.goBack();
       } else {
         console.error('User is not signed in.');
       }
@@ -78,7 +77,6 @@ const ChangeEmail = ({ navigation }) => {
       } else if (error.code === 'auth/invalid-login-credentials') {
         setPasswordError('Wrong Password');
       } else if (error.message && error.message.includes("Cannot create property '_canInitEmulator' on string")) {
-        // Handle this specific error differently or ignore it
         console.warn('Firebase Emulator-related error:', error);
       } else {
         console.error('Error saving data:', error);

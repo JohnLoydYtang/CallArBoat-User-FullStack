@@ -21,7 +21,6 @@ const BookTicketFillup = ({navigation}) => {
   const [location, setLocation] = useState('');
   const [destination, setDestination] = useState('');
   const [gender, setGender] = useState('Male');
-  const [selectedValueAccom, setSelectedValueAccom] = useState(null); // Set initial state to null
   const [selectedValueTicket, setSelectedValueTicket] = useState('Regular');
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
@@ -45,6 +44,7 @@ const BookTicketFillup = ({navigation}) => {
   console.log('vessel business', vesselBusiness);
   const { vesselEconomy } = route.params;
   console.log('vessel economy', vesselEconomy);
+  const [selectedValueAccom, setSelectedValueAccom] = useState(`ECONOMY: ₱${vesselEconomy}`);
 
   const uploadImage = async (imageUri) => {
     const response = await fetch(imageUri);
@@ -229,6 +229,7 @@ const BookTicketFillup = ({navigation}) => {
                     <TextInput
                       value={item.route_location}
                       onChangeText={handleLocationChange}
+                      editable={false}
                     />
                 </View>
               </View>
@@ -239,6 +240,7 @@ const BookTicketFillup = ({navigation}) => {
                     <TextInput
                       value={item.route_destination}
                       onChangeText={handleDestinationChange}
+                      editable={false}
                     />
                 </View>
               </View>
@@ -282,7 +284,6 @@ const BookTicketFillup = ({navigation}) => {
                   <Text style={styles.inputTextStyle}>Accom Type:</Text>
                     <View style={styles.dropdownContainer}>
                       <Picker selectedValue={selectedValueAccom} onValueChange={(itemValue) => setSelectedValueAccom(itemValue)}>
-                      <Picker.Item label="Please Pick Accomodation" />
                         <Picker.Item label={`ECONOMY: ₱${vesselEconomy}`} value={`ECONOMY: ₱${vesselEconomy}`} />
                         <Picker.Item label={`BUSINESS: ₱${vesselBusiness}`} value={`BUSINESS: ₱${vesselBusiness}`} />
                       </Picker>

@@ -246,6 +246,7 @@ const PaymentProcess = ({navigation}) => {
               </Modal>
             </View>
 
+            {error !== '' && <Text style={{color:'red'}}>{error}</Text>}
 
             <View style={styles.PickerTextStyle}>
                   <Text style={styles.inputUploadStyle}>Upload Receipt: </Text>

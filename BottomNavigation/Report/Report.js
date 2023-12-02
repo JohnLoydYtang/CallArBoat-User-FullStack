@@ -76,7 +76,7 @@ const Report = ({navigation}) => {
         <View style={styles.TicketContainer}>
 
             <Text style={styles.Text}>Subject for report:</Text>
-            {messageError !== '' && <Text style={styles.error}>{messageError}</Text>}
+            {messageError !== '' && <Text style={{color:'red'}}>{messageError}</Text>}
             <TextInput
               style={styles.input}
               onChangeText={text => onChangeText(text)}
@@ -84,8 +84,7 @@ const Report = ({navigation}) => {
               placeholder=" "
             />
             <Text style={styles.Text}>Content:</Text>
-            {messageError !== '' && <Text style={styles.error}>{messageError}</Text>}
-            {titleError !== '' && <Text style={styles.error}>{titleError}</Text>}
+            {titleError !== '' && <Text style={{color:'red'}}>{titleError}</Text>}
             <TextInput
               style={styles.inputMessage}
               editable
@@ -95,7 +94,6 @@ const Report = ({navigation}) => {
               onChangeText={text => onChangeMessage(text)}
               value={Title}
             />
-            {titleError !== '' && <Text style={styles.error}>{titleError}</Text>}
 
         <TouchableOpacity style={styles.ButtonDesign} onPress={handleReport}>
           <Text style={styles.buttonText}>Submit</Text>
