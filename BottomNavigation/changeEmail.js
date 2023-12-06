@@ -44,8 +44,9 @@ const ChangeEmail = ({ navigation }) => {
       
       if (user) {
         // Re-authenticate the user with their current password
-        const credential = EmailAuthProvider.credential(user.email, password);
+        const credential = EmailAuthProvider.credential(user.email, password, EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD);
         await reauthenticateWithCredential(user, credential);
+      
         // Continue with the rest of your code after re-authentication
       } else {
         console.error('User is not signed in.');
@@ -76,11 +77,7 @@ const ChangeEmail = ({ navigation }) => {
       } else if (error.code === 'auth/invalid-login-credentials') {
         setPasswordError('Wrong Password');
       } else if (error.message && error.message.includes("Cannot create property '_canInitEmulator' on string")) {
-        console.warn('Firebase Emulator-related error:', error);      
-      }  else if (error.code === 'auth/invalid-credential'){
-        setPasswordError('Wrong Password');
-      }  else if (error.code === 'auth/too-many-requests') {
-        setPasswordError('too many failed login attempts');
+        console.warn('Firebase Emulator-related error:', error);
       } else {
         console.error('Error saving data:', error);
       }
