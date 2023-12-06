@@ -66,7 +66,7 @@ export default StyleSheet.create({    container: {
     },
     businessStyle:{
       color:'#3A78F2',
-      marginRight: 90,
+      marginRight: 10,
       marginLeft: 0
     },
     portStyle:{

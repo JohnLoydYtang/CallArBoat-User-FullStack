@@ -54,6 +54,8 @@ const SignIn = ({navigation}) => {
           setError('Invalid email or password');
         } else if (error.code === 'auth/invalid-email') {
           setError('Invalid email address');
+        }  else if (error.code === 'auth/too-many-requests') {
+          setPasswordError('too many failed login attempts');
         } else {
           setError('An error occurred');
         }

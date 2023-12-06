@@ -44,7 +44,11 @@ const BookTicketFillup = ({navigation}) => {
   console.log('vessel business', vesselBusiness);
   const { vesselEconomy } = route.params;
   console.log('vessel economy', vesselEconomy);
-  const [selectedValueAccom, setSelectedValueAccom] = useState(`ECONOMY: ₱${vesselEconomy}`);
+  const {travelFareBusiness} = route.params;
+  console.log('travelfarebusiness',travelFareBusiness);
+  const {travelFareEconomy} = route.params;
+  console.log('travelfareeconomy',travelFareEconomy);
+  const [selectedValueAccom, setSelectedValueAccom] = useState(`ECONOMY: ₱${travelFareEconomy}`);
 
   const uploadImage = async (imageUri) => {
     const response = await fetch(imageUri);
@@ -284,8 +288,8 @@ const BookTicketFillup = ({navigation}) => {
                   <Text style={styles.inputTextStyle}>Accom Type:</Text>
                     <View style={styles.dropdownContainer}>
                       <Picker selectedValue={selectedValueAccom} onValueChange={(itemValue) => setSelectedValueAccom(itemValue)}>
-                        <Picker.Item label={`ECONOMY: ₱${vesselEconomy}`} value={`ECONOMY: ₱${vesselEconomy}`} />
-                        <Picker.Item label={`BUSINESS: ₱${vesselBusiness}`} value={`BUSINESS: ₱${vesselBusiness}`} />
+                        <Picker.Item label={`ECONOMY: ₱${travelFareEconomy}`} value={`ECONOMY: ₱${travelFareEconomy}`} />
+                        <Picker.Item label={`BUSINESS: ₱${travelFareBusiness}`} value={`BUSINESS: ₱${travelFareBusiness}`} />
                       </Picker>
                     </View>
                 </View>

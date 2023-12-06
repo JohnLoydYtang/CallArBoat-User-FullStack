@@ -12,6 +12,7 @@ const MedallionSearchTravel = ({navigation}) => {
   const { isAuthenticated } = useContext(AuthContext);
   const [Vessel_Route, setMedallion] = useState([]);
   const [Vessel, setVessel] = useState([]);
+  const [TravelFare, setFare] = useState([]);
   const [loading, setLoading] = useState(true);
   const [Vessel_Schedule, setVesselSchedule] = useState([]);
   const route = useRoute();
@@ -20,6 +21,7 @@ const MedallionSearchTravel = ({navigation}) => {
   const travelRef = collection(db, 'Vessel_Route');
   const vesselRef = collection(db, 'Vessel');
   const scheduleRef = collection(db, 'Vessel_Schedule');
+  const fareRef = collection(db, 'Travel_Fare');
 
   useEffect(() => {
    const fetchData = async () => {
@@ -27,10 +29,12 @@ const MedallionSearchTravel = ({navigation}) => {
        const travelSnapshot = await getDocs(travelRef);
        const vesselSnapshot = await getDocs(vesselRef);
        const scheduleSnapshot = await getDocs(scheduleRef);
+       const fareSnapshot = await getDocs(fareRef);
 
        let Vessel_Route = [];
        let Vessel = [];
        let Vessel_Schedule = [];
+       let Travel_Fare = [];
 
        travelSnapshot.docs.forEach((doc) => {
          Vessel_Route.push({ ...doc.data(), id: doc.id });
@@ -44,10 +48,17 @@ const MedallionSearchTravel = ({navigation}) => {
         Vessel_Schedule.push({ ...doc.data(), id: doc.id});
         console.log('schedule', Vessel_Schedule);
        })
-  
+       
+       fareSnapshot.docs.forEach((doc) => {
+        Travel_Fare.push({ ...doc.data(), id: doc.id});
+        console.log('fare', Travel_Fare);
+       });
+
+
        setMedallion(Vessel_Route);
        setVessel(Vessel);
        setVesselSchedule(Vessel_Schedule);
+       setFare(Travel_Fare); // Corrected variable name
        setLoading(false);
      } catch (err) {
        console.log(err.message);
@@ -73,12 +84,16 @@ const MedallionSearchTravel = ({navigation}) => {
           {Vessel_Route.map((item, index) => {
             const vessel = Vessel.find(v => v.vessel_id === item.vessel_id);
             const schedule = Vessel_Schedule.find(s => s.vessel_id === item.vessel_id);
+            const fare = TravelFare.find(f => f.vessel_id === item.vessel_id); 
+            console.log('fare', fare);
             return (
               <TouchableOpacity key={index} style={styles.DestinationDetails}  onPress={() => navigation.navigate('BookTicketFillup', {
                 item: item, 
                 companyItem: companyItem,
                 vesselBusiness: vessel ? vessel.vessel_business : 'N/A',
-                vesselEconomy: vessel ? vessel.vessel_economy : 'N/A'
+                vesselEconomy: vessel ? vessel.vessel_economy : 'N/A',
+                travelFareBusiness: fare ? fare.business: 'N/A',
+                travelFareEconomy: fare ? fare.economy: 'N/A',
               })}
              >               
                 <View style={styles.DestinationDetailsContent}>
@@ -109,8 +124,8 @@ const MedallionSearchTravel = ({navigation}) => {
                         <Text style={styles.personText}>Economy</Text>
                     </View>
                     <View style={styles.rowContainer}>
-                      <Text style={styles.businessStyle}>₱{vessel ? vessel.vessel_business : 'N/A'}</Text>
-                      <Text style={styles.personStyle}>₱{vessel ? vessel.vessel_economy : 'N/A'}</Text>
+                      <Text style={styles.businessStyle}>Cap: {vessel ? vessel.vessel_business : 'N/A'} / ₱ {fare ? fare.business: 'N/A'}</Text>
+                      <Text style={styles.personStyle}>Cap: {vessel ? vessel.vessel_economy : 'N/A'} / ₱ {fare ? fare.economy: 'N/A'}</Text>
                     </View>
 
                     <View style={styles.rowContainer}>
