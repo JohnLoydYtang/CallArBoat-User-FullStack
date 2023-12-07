@@ -31,6 +31,9 @@ import styles from './assets/css/AppStyle';
 import ForgotPassword from './screens/forgotPassword';
 import RebookTicket from './BottomNavigation/TicketTransaction/rebookTicket';
 import ChangeEmail from './BottomNavigation/changeEmail';
+import TwoGoSearchTravel from './BottomNavigation/BookingProcedure/2Go/TwoGoSearchTravel';
+import CokaliongSearchTravel from './BottomNavigation/BookingProcedure/Cokaliong/CokaliongSearchTravel';
+import FastCatSearchTravel from './BottomNavigation/BookingProcedure/FastCat/FastCatSearchTravel';
 
 const LogoImage = require('./assets/images/LOGO.png');
 
@@ -139,6 +142,9 @@ useEffect(() => {
           <Stack.Screen name="ViewTicketTransaction" component={ViewTicketTransaction} options={{ headerTitle: "            View Ticket" }} />
           <Stack.Screen name="RebookTicket" component={RebookTicket} options={{ headerTitle: "            Rebook Ticket" }} />
           <Stack.Screen name="Medallion" component={MedallionSearchTravel} options={{ headerTitle: "              Medallion" }} />
+          <Stack.Screen name="2Go" component={TwoGoSearchTravel} options={{ headerTitle: "              2Go" }} />
+          <Stack.Screen name="Cokaliong" component={CokaliongSearchTravel} options={{ headerTitle: "              Cokaliong" }} />
+          <Stack.Screen name="FastCat" component={FastCatSearchTravel} options={{ headerTitle: "              FastCat" }} />
           <Stack.Screen name="BookTicketFillup" component={BookTicketFillup} options={{ headerTitle: "            Book Ticket" }} />
           <Stack.Screen name="PaymentProcess" component={PaymentProcess} options={{ headerTitle: "        Payment Process" }} />
         </Stack.Navigator>

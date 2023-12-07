@@ -125,10 +125,9 @@ export default StyleSheet.create({
         bottom:20,
       },
       qrImage:{
-        height:100,
-        width:100,
+        left: 20,
         transform: [{ rotate: '90deg'}],
-        bottom:120,
-        padding:120
+        bottom:90,
+        padding:90
       }
 });

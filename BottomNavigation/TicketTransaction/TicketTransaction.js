@@ -64,7 +64,7 @@ const TicketTransaction = ({navigation}) => {
               type: 'cancellation',
               status: 'cancelled by user',
               headerApprove: "Ticket User Cancellation",
-              message:"The user has cancelled the ticket voluntarily.",
+              message: `The user ${item.Name} has cancelled the ticket voluntarily.`,
               timestamp: serverTimestamp(),
               medallionBookedId: item.id, // You'll need to replace this with the actual user ID
               paymentId: paymentId,

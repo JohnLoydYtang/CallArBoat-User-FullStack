@@ -200,7 +200,7 @@ const AccountInformation = ({ navigation }) => {
             placeholder={item.username}
         />
         </View>
-        <Text style={{marginTop:50, color:'red', fontWeight:'bold'}}>Input your new verified email here!</Text>
+        <Text style={{marginTop:50, color:'red', fontWeight:'bold'}}>Input your new verified email here! {'\n'} If you did not change email, use the old one</Text>
         <View style={styles.TextInputContainer}>
         <Icon style={styles.icon} name="envelope" size={39} color="#000"/>
         <TextInput

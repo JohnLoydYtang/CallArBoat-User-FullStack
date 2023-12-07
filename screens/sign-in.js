@@ -3,7 +3,7 @@ import { CheckBox } from 'react-native-elements';
 import { StatusBar, KeyboardAvoidingView, TextInput, View, Image, Text, TouchableOpacity} from "react-native";
 import { signInWithEmailAndPassword  } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
-import { AuthContext } from '../AuthContext'; // Import the AuthContext
+import { AuthContext } from '../AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //CSS
@@ -30,6 +30,11 @@ const SignIn = ({navigation}) => {
         const userCredential = await signInWithEmailAndPassword(auth, value, password);
         const user = userCredential.user;
 
+        if (!user.emailVerified) {
+          setError('Verify Account first');
+          return;
+        }
+
         const userID = user.uid;
         console.log('userID:', userID);    
     
@@ -55,7 +60,7 @@ const SignIn = ({navigation}) => {
         } else if (error.code === 'auth/invalid-email') {
           setError('Invalid email address');
         }  else if (error.code === 'auth/too-many-requests') {
-          setPasswordError('too many failed login attempts');
+          setError('too many failed login attempts');
         } else {
           setError('An error occurred');
         }
@@ -75,12 +80,12 @@ const SignIn = ({navigation}) => {
                 <Image source={getLogo}/>
             </View>
 
-            <Text style={styles.errorText}>{error}</Text>
+            <Text style={styles.errorText}>{error === 'Verify Account first' ? 'Please verify your email first' : error}</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={text => onChangeText(text)}
                 value={value}
-                placeholder="Username"
+                placeholder="Email"
             />
 
             <TextInput

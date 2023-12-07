@@ -8,7 +8,7 @@ import { useRoute } from '@react-navigation/native';
 import styles from '../../../assets/css/BottomNavigationStyle/BookingProcedureStyle/SearchTravelStyle';
 import { collection, getDocs  } from 'firebase/firestore';
 
-const MedallionSearchTravel = ({navigation}) => {
+const CokaliongSearchTravel = ({navigation}) => {
   const { isAuthenticated } = useContext(AuthContext);
   const [Vessel_Route, setMedallion] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,4 +83,4 @@ const MedallionSearchTravel = ({navigation}) => {
       );      
 };
 
-export default MedallionSearchTravel;
+export default CokaliongSearchTravel;
