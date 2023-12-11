@@ -24,6 +24,11 @@ const PaymentProcess = ({navigation}) => {
   const selectedValueAccom = route.params?.AccomType;
   const selectedValueTicket = route.params?.TicketType;
   const paymentId = route.params?.paymentId;
+  const  travelFareEconomy = route.params?.travelFareEconomy;
+  console.log('travelFareEconomy', travelFareEconomy);
+  const travelFareBusiness = route.params.travelFareBusiness;
+  console.log('travelFareBusiness', travelFareBusiness);
+  
   const { Discount, VesselValue } = route.params;
   const { item } = route.params;
   const { companyItem} = route.params;
@@ -84,6 +89,8 @@ const PaymentProcess = ({navigation}) => {
           PaymentImage: imageUrl, // Save the image URL in Firestore
           Total: total, // Save the total price in Firestore
           paymentId: paymentId,
+          vatAmount: vatAmount,
+          totalWithoutVat: totalWithoutVat,
         });
           navigation.navigate('Dashboard'); 
           alert('Payment Success.');
@@ -180,8 +187,26 @@ const PaymentProcess = ({navigation}) => {
         }
       };
     
-      const total = item.fare_price * (1 - Discount / 100);
+      let total;
+      let totalWithoutVat;
+      let vatAmount;
+      
+      if (selectedValueAccom === `ECONOMY: ₱${travelFareEconomy}`) {
+          totalWithoutVat = (item.fare_price + travelFareEconomy) * (1 - Discount / 100);
+          total = totalWithoutVat * 1.12;
+          vatAmount = total - totalWithoutVat;
+      } else if (selectedValueAccom === `BUSINESS: ₱${travelFareBusiness}`) {
+          totalWithoutVat = (item.fare_price + travelFareBusiness) * (1 - Discount / 100);
+          total = totalWithoutVat * 1.12;
+          vatAmount = total - totalWithoutVat;
+      } else {
+          console.error("Invalid user choice");
+      }
 
+      console.log("totalWithoutVat:", totalWithoutVat);
+      console.log("total:", total);
+      console.log("vatAmount:", vatAmount);
+      
     return (
         <View style={styles.container}>
             <Text style={styles.TitleTextStyle}>Ticket Details:</Text>           
@@ -196,8 +221,8 @@ const PaymentProcess = ({navigation}) => {
                 <Text style={styles.InputTextStyle}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{selectedValueTicket}</Text></Text>
                 <Text style={styles.InputTextStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>₱{item.fare_price}</Text></Text>
                 <Text style={styles.InputTextStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{Discount}%</Text></Text>
-                <Text style={styles.InputTextStyle}><Text style={{color:'red'}}>Please note that you need to manually add the Accom Fee:</Text></Text>
-                <Text style={styles.InputTextStyle}>Total: <Text style={{textDecorationLine: 'underline'}}>₱{total.toFixed(2)}</Text></Text>
+                <Text style={styles.InputTextStyle}>VAT: <Text style={{textDecorationLine: 'underline'}}>₱{vatAmount.toFixed(2)}</Text></Text>
+                <Text style={styles.InputTextStyle}>Total: <Text style={{textDecorationLine: 'underline'}}>₱{totalWithoutVat.toFixed(2)}</Text></Text>
             </View>
 
             <Text style={styles.PaymentTextStyle}>Payment Method:</Text>
@@ -219,7 +244,6 @@ const PaymentProcess = ({navigation}) => {
                 visible={modalVisible}
                 onRequestClose={() => {
                   setModalVisible(!modalVisible);
-                  // Clear the selected image when modal is closed
                   setSelectedImage(null);
                 }}
               >

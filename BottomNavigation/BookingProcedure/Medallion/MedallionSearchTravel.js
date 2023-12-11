@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, ScrollView, Image, Text, TouchableOpacity, ActivityIndicator  } from 'react-native';
+import { View, ScrollView, Image, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { AuthContext } from '../../../AuthContext';
 import {db} from '../../../firebaseConfig';
 import { useRoute } from '@react-navigation/native';
@@ -77,7 +77,20 @@ const MedallionSearchTravel = ({navigation}) => {
     </View>);
   }
 
-
+  const showAlert = () => {
+    Alert.alert(
+      "Alert Title",
+      "Vessel capacity is 0.",
+      [
+        {
+          text: "OK",
+          onPress: () => console.log("OK Pressed"),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+  
     return (
         <View style={styles.container}>
           <ScrollView style={styles.scrollView}>
@@ -85,6 +98,13 @@ const MedallionSearchTravel = ({navigation}) => {
             const vessel = Vessel.find(v => v.vessel_id === item.vessel_id);
             const schedule = Vessel_Schedule.find(s => s.vessel_id === item.vessel_id);
             const fare = TravelFare.find(f => f.vessel_id === item.vessel_id); 
+            // Check if either vessel_business or vessel_economy is greater than 0
+            const shouldRenderComponent = vessel && (vessel.vessel_business > 0 || vessel.vessel_economy > 0);
+
+            if (!shouldRenderComponent) {
+              // Skip rendering the entire component if both vessel_business and vessel_economy are 0
+              return null;
+            }
             console.log('fare', fare);
             return (
               <TouchableOpacity key={index} style={styles.DestinationDetails}  onPress={() => navigation.navigate('BookTicketFillup', {
@@ -124,14 +144,16 @@ const MedallionSearchTravel = ({navigation}) => {
                         <Text style={styles.personText}>Economy</Text>
                     </View>
                     <View style={styles.rowContainer}>
-                      <Text style={styles.businessStyle}>Cap: {vessel ? vessel.vessel_business : 'N/A'} / ₱ {fare ? fare.business: 'N/A'}</Text>
-                      <Text style={styles.personStyle}>Cap: {vessel ? vessel.vessel_economy : 'N/A'} / ₱ {fare ? fare.economy: 'N/A'}</Text>
+                      {vessel.vessel_business === 0 ? showAlert() : 
+                        <Text style={styles.businessStyle}>Cap: {vessel ? vessel.vessel_business : 'N/A'} {`\n`}₱ {fare ? fare.business: 'N/A'}</Text>
+                      }
+                      {vessel.vessel_economy === 0 ? showAlert() : 
+                        <Text style={styles.personStyle}>Cap: {vessel ? vessel.vessel_economy : 'N/A'} {`\n`}₱ {fare ? fare.economy: 'N/A'}</Text>
+                      }
                     </View>
-
                     <View style={styles.rowContainer}>
-                    <Text style={styles.businessText}>Scheduled Days: {schedule && schedule.days.join(', ')}</Text>
-                    </View>
-                   
+                    <Text style={styles.businessText}>Scheduled Days: {`\n`}{schedule && schedule.days.join('\n')}</Text>
+                    </View>                 
                   </View>      
                 </View>
               </TouchableOpacity>

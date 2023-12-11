@@ -30,24 +30,18 @@ const BookTicketFillup = ({navigation}) => {
 
   const route = useRoute();
   const { item } = route.params;
-  console.log('Item:', item);
   const vesselId = route.params.item.id;
-  console.log('vesselid: ', vesselId);
   const vesselName = route.params.item.vessel_name;
-  console.log('vesselname: ', vesselName);
   const routeName = route.params.item.route_name;
   const { companyItem } = route.params;
-  console.log('companyItem:', companyItem);
   const { vesselItem } = route.params;
-  console.log('vessel Item:', vesselItem);
   const { vesselBusiness } = route.params;
-  console.log('vessel business', vesselBusiness);
+  console.log('vesselBusiness',vesselBusiness);
+
   const { vesselEconomy } = route.params;
-  console.log('vessel economy', vesselEconomy);
+  console.log('vesselEconomy',vesselEconomy);
   const {travelFareBusiness} = route.params;
-  console.log('travelfarebusiness',travelFareBusiness);
   const {travelFareEconomy} = route.params;
-  console.log('travelfareeconomy',travelFareEconomy);
   const [selectedValueAccom, setSelectedValueAccom] = useState(`ECONOMY: ₱${travelFareEconomy}`);
 
   const uploadImage = async (imageUri) => {
@@ -153,6 +147,8 @@ const BookTicketFillup = ({navigation}) => {
           Date: firestoreDateString,
           companyItem: companyItem,
           paymentId: paymentId,
+          travelFareBusiness: travelFareBusiness,
+          travelFareEconomy: travelFareEconomy,
         });
 
          console.log('Success Saving Data');
@@ -210,21 +206,22 @@ const BookTicketFillup = ({navigation}) => {
             {error !== '' && <Text style={styles.error}>{error}</Text>}
               <View style={styles.textInputStyle}>
               <Text style={styles.promptText}>Sail Date:</Text>
-                <Pressable onPress={() => setShowDatePicker(true)}>
-                <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
-                  <TextInput
-                    value={selectedDate.toDateString()} // Display the selected date in the TextInput
-                    editable={false} // Disable direct editing of the TextInput
-                    style={styles.dateInput} // Add the style here
-                  />
-                </Pressable>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    onChange={handleDateChange}
-                  />               
-                ) }
+                  <Pressable onPress={() => setShowDatePicker(true)}>
+                    <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
+                    <TextInput
+                      value={selectedDate.toDateString()} // Display the selected date in the TextInput
+                      editable={false} // Disable direct editing of the TextInput
+                      style={styles.dateInput} // Add the style here
+                    />
+                  </Pressable>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={selectedDate}
+                      mode="date"
+                      minimumDate={new Date()} // Set minimumDate to the current date to prevent past dates
+                      onChange={handleDateChange}
+                    />
+                  )}
               </View>
 
               <View style={styles.rowContainer}>
@@ -283,15 +280,40 @@ const BookTicketFillup = ({navigation}) => {
                   </View>
                 </View>
               </View>
+
               <View style={styles.rowContainer}>
                 <View style={styles.PickerTextStyle}>
                   <Text style={styles.inputTextStyle}>Accom Type:</Text>
-                    <View style={styles.dropdownContainer}>
-                      <Picker selectedValue={selectedValueAccom} onValueChange={(itemValue) => setSelectedValueAccom(itemValue)}>
-                        <Picker.Item label={`ECONOMY: ₱${travelFareEconomy}`} value={`ECONOMY: ₱${travelFareEconomy}`} />
-                        <Picker.Item label={`BUSINESS: ₱${travelFareBusiness}`} value={`BUSINESS: ₱${travelFareBusiness}`} />
-                      </Picker>
-                    </View>
+
+                  <View style={styles.dropdownContainer}>
+                  <Picker
+                      selectedValue={selectedValueAccom}
+                      onValueChange={(itemValue) => {
+                        if (itemValue !== "Capacity Full") {
+                          setSelectedValueAccom(itemValue);
+                        }
+                      }}
+                      enabled={vesselBusiness > 0 || vesselEconomy > 0} // Enable if at least one capacity is greater than 0
+                    >
+                      {vesselEconomy > 0 ? (
+                        <Picker.Item
+                          label={`ECONOMY: ₱${travelFareEconomy} | Capacity = ${vesselEconomy}`}
+                          value={`ECONOMY: ₱${travelFareEconomy}`}
+                        />
+                      ) : (
+                        <Picker.Item label="ECONOMY Capacity Full" value="Capacity Full" />
+                      )}
+
+                      {vesselBusiness > 0 ? (
+                        <Picker.Item
+                          label={`BUSINESS: ₱${travelFareBusiness} | Capacity = ${vesselBusiness}`}
+                          value={`BUSINESS: ₱${travelFareBusiness}`}
+                        />
+                      ) : (
+                        <Picker.Item label="BUSINESS Capacity Full" value="Capacity Full" />
+                      )}
+                    </Picker>
+                  </View>
                 </View>
               </View>
 

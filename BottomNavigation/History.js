@@ -69,7 +69,7 @@ const History = ({navigation}) => {
           let Payment = []
           snapshot.docs.forEach((doc) => {
             const data = doc.data();
-            Payment.push({id: doc.id, paymentId: data.paymentId ,total:data.Total})
+            Payment.push({id: doc.id, paymentId: data.paymentId ,total:data.Total, vatAmount:data.vatAmount, totalWithoutVat:data.totalWithoutVat})
           })
           console.log('payment', Payment);
           setPayment(Payment);
@@ -106,7 +106,6 @@ const History = ({navigation}) => {
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          {console.log('transaction', Transaction)}  
           {Transaction.length === 0 ? 
      <Text style={styles.textHistory}>History is empty!</Text> 
      :     
@@ -116,7 +115,6 @@ const History = ({navigation}) => {
           let payment;
           if (Array.isArray(Payment)) {
            payment = Payment.find(p => p.paymentId === item.paymentId);
-           console.log(payment);
           } else {
            console.log('Payment is not an array');
           }          
@@ -126,11 +124,14 @@ const History = ({navigation}) => {
           const medallionPrice = medallion?.Price;
           const total = payment?.total;
           const paymentId = payment?.id;
+          const vatAmount = payment?.vatAmount;
+          const totalWithoutVat= payment?.totalWithoutVat;
           const date = item.dateIssued.toDate();
           // Format the Date object as a string
           const dateString = date.toLocaleDateString();
           return (
-            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice, total, paymentId })}>
+            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice, total, paymentId, vatAmount, totalWithoutVat })}  
+            disabled={item.status === 'Cancelled by Agency' || item.status === 'cancelled by user'}>
               <View style={styles.TransactionContent}>
               {medallionImage ? 
             <Image source={{uri: medallionImage}} style={styles.image}/> : 

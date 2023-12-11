@@ -128,21 +128,22 @@ const RebookTicket = ({navigation}) => {
             {error !== '' && <Text style={styles.error}>{error}</Text>}
               <View style={styles.textInputStyle}>
               <Text style={styles.promptText}>Sail Date:</Text>
-                <Pressable onPress={() => setShowDatePicker(true)}>
-                <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
-                  <TextInput
-                    value={selectedDate.toDateString()} // Display the selected date in the TextInput
-                    editable={false} // Disable direct editing of the TextInput
-                    style={styles.dateInput} // Add the style here
-                  />
-                </Pressable>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    onChange={handleDateChange}
-                  />               
-                ) }
+              <Pressable onPress={() => setShowDatePicker(true)}>
+                    <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
+                    <TextInput
+                      value={selectedDate.toDateString()} // Display the selected date in the TextInput
+                      editable={false} // Disable direct editing of the TextInput
+                      style={styles.dateInput} // Add the style here
+                    />
+                  </Pressable>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={selectedDate}
+                      mode="date"
+                      minimumDate={new Date()} // Set minimumDate to the current date to prevent past dates
+                      onChange={handleDateChange}
+                    />
+                  )}
               </View>
 
               <View style={styles.rowContainer}>

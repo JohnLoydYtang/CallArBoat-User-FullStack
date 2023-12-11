@@ -10,7 +10,7 @@ const QrCodeImage = require('../../assets/images/qrcode.png');
 
 const ViewTicketTransaction = ({navigation}) => {
     const route = useRoute();
-    const { item, medallionPrice, companyItem, total } = route.params;
+    const { item, medallionPrice, companyItem, total, vatAmount, totalWithoutVat } = route.params;
     console.log('Item: ', item);
             
     const date = item.Date.toDate();
@@ -28,6 +28,7 @@ const ViewTicketTransaction = ({navigation}) => {
 
             <Text style={styles.CompanyTitle}>COMPANY NAME: <Text style={{textDecorationLine: 'underline'}}>{item.companyName}</Text></Text> 
             <View style={styles.Details}>
+            <Text style={styles.NameDetails}>Vessel #: <Text style={{textDecorationLine: 'underline'}}>{item.vessel_id}</Text> </Text>
             <Text style={styles.NameDetails}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text> </Text>
             <Text style={styles.VesselDetails}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vesselName}</Text></Text>
             <Text style={styles.RouteDetails}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.routeName}</Text></Text>
@@ -43,7 +44,8 @@ const ViewTicketTransaction = ({navigation}) => {
             <Text style={styles.TicketTypeDetails}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text> </Text>
             <Text style={styles.DiscountDetails}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>
             <Text style={styles.AppDetails}>Status:  <Text style={{textDecorationLine: 'underline'}}>{item.status}</Text></Text>
-            <Text style={styles.TotalDetails}>Total: <Text style={{textDecorationLine: 'underline'}}>₱{total?.toFixed(2)}</Text></Text>
+            <Text style={styles.TotalDetails}>VAT: <Text style={{textDecorationLine: 'underline'}}>₱{vatAmount?.toFixed(2)}</Text></Text>
+            <Text style={styles.TotalDetails}>Total: <Text style={{textDecorationLine: 'underline'}}>₱{totalWithoutVat?.toFixed(2)}</Text></Text>
             <Text style={styles.PaidDetails}>Paid: <Text style={{color:'red'}}>Fully Paid</Text></Text>
             </View>
 

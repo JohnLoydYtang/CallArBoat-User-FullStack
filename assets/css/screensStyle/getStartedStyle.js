@@ -14,7 +14,7 @@ export default StyleSheet.create({
     },
     textDesign: {
       position: 'absolute',
-      paddingTop: 250,
+      paddingTop: '90%',
       fontWeight: 'bold',
       fontSize: 25,
       left: 16,

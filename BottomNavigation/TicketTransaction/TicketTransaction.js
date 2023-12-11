@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, Text, TouchableOpacity, Modal} from "react-native";
+import { StyleSheet, View, Image, Text, TouchableOpacity, Modal, ActivityIndicator } from "react-native";
 import { useRoute } from '@react-navigation/native';
 import { doc, deleteDoc, updateDoc, addDoc, collection, serverTimestamp} from "firebase/firestore";
 import {db} from '../../firebaseConfig';
@@ -10,11 +10,12 @@ import styles from '../../assets/css/BottomNavigationStyle/TicketTransaction/Tic
 const TicketTransaction = ({navigation}) => {
         const [showPrompt, setShowPrompt] = useState(false);
         const [isCancelled, setIsCancelled] = useState(false);
+        const [isLoading, setIsLoading] = React.useState(false);
 
         const route = useRoute();
-        const { item, medallionImage, medallionPrice, total, paymentId } = route.params;
+        const { item, medallionImage, medallionPrice, total, paymentId, vatAmount, totalWithoutVat } = route.params;
         
-        console.log('paymentId', paymentId);
+        console.log('totalw/vat', totalWithoutVat);
         console.log('item',item);
 
         const date = item.Date.toDate();
@@ -53,8 +54,10 @@ const TicketTransaction = ({navigation}) => {
             setIsCancelled(true);
         
             // Delay for 5 seconds for cancel picture
-            await new Promise(resolve => setTimeout(resolve, 5000));
-        
+            setIsLoading(true);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            setIsLoading(false);
+                    
             // Update documents in 'Medallion-BookedTicket' and 'Payments' collections
             await updateDocument('Medallion-BookedTicket', item.id, { status: 'cancelled by user' });
             await updatePayment('Payments', paymentId, { status: 'cancelled by user' });
@@ -72,7 +75,7 @@ const TicketTransaction = ({navigation}) => {
             });
         
               // Delay for 2 seconds before closing the modal and navigating back
-              await new Promise(resolve => setTimeout(resolve, 2000));
+              await new Promise(resolve => setTimeout(resolve, 500));
               console.log('success');
               setShowPrompt(false);
               navigation.goBack();
@@ -87,7 +90,7 @@ const TicketTransaction = ({navigation}) => {
           if (isCancelled) {
             timeoutId = setTimeout(() => {
               setShowPrompt(false);
-            }, 10000); // Delay for 10 second before closing the modal
+            }, 4000); // Delay for 3 second before closing the modal
           }
           return () => {
             clearTimeout(timeoutId);
@@ -110,6 +113,7 @@ const TicketTransaction = ({navigation}) => {
             <Text>No image</Text>
        }     
             <View style={styles.textContainer}>
+            <Text style={styles.textStyle}>Vessel #: <Text style={{textDecorationLine: 'underline'}}>{item.vessel_id}</Text> </Text>
             <Text style={styles.textStyle}>Date issued: <Text style={{textDecorationLine: 'underline'}}>{dateIssuedString}</Text> </Text>
             <Text style={styles.textStyle}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text></Text>
             <Text style={styles.textStyle}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vesselName}</Text></Text>
@@ -119,8 +123,9 @@ const TicketTransaction = ({navigation}) => {
             <Text style={styles.textStyle}>Sex/Age: <Text style={{textDecorationLine: 'underline'}}>{item.Gender}</Text> / <Text style={{textDecorationLine: 'underline'}}>{item.Age}</Text></Text>
             <Text style={styles.textStyle}>Ticket Type: <Text style={{textDecorationLine: 'underline'}}>{item.TicketType}</Text></Text>
             <Text style={styles.textStyle}>Fare: <Text style={{textDecorationLine: 'underline'}}>₱{medallionPrice}</Text></Text>
-            <Text style={styles.textStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>            
-            <Text style={styles.textStyle}>Total:  <Text style={{textDecorationLine: 'underline'}}>₱{total?.toFixed(2)}</Text></Text>
+            <Text style={styles.textStyle}>Discount: <Text style={{textDecorationLine: 'underline'}}>{item.Discount}%</Text></Text>  
+            <Text style={styles.textStyle}>VAT:  <Text style={{textDecorationLine: 'underline'}}>₱{vatAmount?.toFixed(2)}</Text></Text>          
+            <Text style={styles.textStyle}>Total:  <Text style={{textDecorationLine: 'underline'}}>₱{totalWithoutVat?.toFixed(2)}</Text></Text>
             <Text style={styles.paidStyle}>Paid: <Text style={{color:'red'}}>Fully Paid</Text></Text>
         </View>
       </View>
@@ -140,14 +145,14 @@ const TicketTransaction = ({navigation}) => {
           <TouchableOpacity style={styles.cancelButton} onPress={handleNormalCancel}>
               <Text style={styles.newCancelText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmCancel}>
-              <Text style={styles.confirmText}>Confirm</Text>
+            <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmCancel} disabled={isLoading}>
+            {isLoading ? <ActivityIndicator size="medium" color="white" /> : <Text style={styles.confirmText}>Confirm</Text>}
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-            <TouchableOpacity style={styles.viewDesign} onPress={() => navigation.navigate('ViewTicketTransaction', { item, medallionImage, medallionPrice, total })} >
+            <TouchableOpacity style={styles.viewDesign} onPress={() => navigation.navigate('ViewTicketTransaction', { item, medallionImage, medallionPrice, total, vatAmount, totalWithoutVat })} >
                 <Text style={styles.viewText}>View</Text>
             </TouchableOpacity>
       </View>

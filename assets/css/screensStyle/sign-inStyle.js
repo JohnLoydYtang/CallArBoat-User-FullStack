@@ -76,7 +76,7 @@ export default StyleSheet.create({
     },
     text2: {
       color: '#4A79E5',
-      marginLeft: 200,
+      marginLeft: '48%',
       bottom: 21,
     },
     checkboxContainer: {

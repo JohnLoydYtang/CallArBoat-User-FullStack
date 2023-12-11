@@ -12,10 +12,6 @@ import { getAuth, fetchSignInMethodsForEmail, updateEmail, reauthenticateWithCre
 import styles from '../../assets/css/BottomNavigationStyle/ProfilePages/AcountInformationStyle';
 
 const AccountInformation = ({ navigation }) => {
-    const [Name, onChangeText] = React.useState('');
-    const [number, onChangeNumber] = React.useState('');
-    const [Username, onChangeUsername] = React.useState('');
-    const [Email, onChangeEmail] = React.useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const [error, setError] = useState('');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -152,6 +148,11 @@ const AccountInformation = ({ navigation }) => {
         }
       })();
     }, []);
+
+    const [Name, onChangeText] = React.useState(`${item.name}`);
+    const [number, onChangeNumber] = React.useState(`${item.phoneNumber}`);
+    const [Username, onChangeUsername] = React.useState(`${item.username}`);
+    const [Email, onChangeEmail] = React.useState(`${item.email}`);
   
     return (
       <View style={styles.container}>

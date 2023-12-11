@@ -10,6 +10,13 @@ export default StyleSheet.create({
     imagecontainer: {
       marginBottom: 300,
     },
+    dropdownContainer:{
+      backgroundColor: 'white',
+      height: 60,
+      width: 180, 
+      borderRadius:50,
+      marginLeft:'40%',
+    },
     overlay: {
       position: 'absolute',
       top: 0,

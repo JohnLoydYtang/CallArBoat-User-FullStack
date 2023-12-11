@@ -66,8 +66,6 @@ export default StyleSheet.create({    container: {
     },
     businessStyle:{
       color:'#3A78F2',
-      marginRight: 10,
-      marginLeft: 0
     },
     portStyle:{
       color:'#3A78F2',
@@ -76,7 +74,7 @@ export default StyleSheet.create({    container: {
     },
     personStyle:{
       color:'#5CB85C',
-      marginRight: 30,
+      marginLeft:'15%',
     },
     scheduleStyle:{
       position:'relative',
