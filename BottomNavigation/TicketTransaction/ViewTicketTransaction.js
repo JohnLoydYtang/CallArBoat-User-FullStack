@@ -28,7 +28,7 @@ const ViewTicketTransaction = ({navigation}) => {
 
             <Text style={styles.CompanyTitle}>COMPANY NAME: <Text style={{textDecorationLine: 'underline'}}>{item.companyName}</Text></Text> 
             <View style={styles.Details}>
-            <Text style={styles.NameDetails}>Vessel #: <Text style={{textDecorationLine: 'underline'}}>{item.vessel_id}</Text> </Text>
+            <Text style={styles.NameDetails}>Vessel #: <Text style={{textDecorationLine: 'underline'}}>{item.vesselId}</Text> </Text>
             <Text style={styles.NameDetails}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text> </Text>
             <Text style={styles.VesselDetails}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vesselName}</Text></Text>
             <Text style={styles.RouteDetails}>Route: <Text style={{textDecorationLine: 'underline'}}>{item.routeName}</Text></Text>

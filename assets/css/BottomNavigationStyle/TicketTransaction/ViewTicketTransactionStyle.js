@@ -46,34 +46,41 @@ export default StyleSheet.create({
       },
       Details:{
           transform: [{ rotate: '90deg'}],
-          margin: 3,
+          margin: 0,
       },
       NameDetails:{
         fontWeight: 'bold',
         bottom: 30,
+        right:'4%',
       },
       VesselDetails:{
         fontWeight: 'bold',
         bottom: 20,
+        right:'4%',
       },
       RouteDetails:{
         fontWeight: 'bold',
         bottom: 10,
+        right:'4%',
       },
       SailDetails:{
         fontWeight: 'bold',
+        right:'4%',
       },
       AccomDetails:{
         fontWeight: 'bold',
         top: 10,
+        right:'4%',
       },
       SeatDetails:{
         fontWeight: 'bold',
         top: 20,
+        right:'4%',
       },
       SexDetails:{
         fontWeight: 'bold',
-        top: 30,
+        top: 20,
+        right:'4%',
       },
       DateDetails:{
         transform: [{ rotate: '90deg'}],
@@ -87,22 +94,23 @@ export default StyleSheet.create({
       },
       FareDetails:{
         fontWeight: 'bold',
-        bottom: 30,
+        bottom: '20%',
+        left:'4%',
       },
       TicketTypeDetails:{
         fontWeight: 'bold',
-        bottom: 20,
+        bottom: '15%',
       },
       DiscountDetails:{
         fontWeight: 'bold',
-        bottom: 10,
+        bottom: '10%',
       },
       AppDetails:{
         fontWeight: 'bold',
       },
       TotalDetails:{
         fontWeight: 'bold',
-        top: 10,
+        top: '10%',
       },
       PaidDetails:{
         color:'red',
@@ -125,9 +133,9 @@ export default StyleSheet.create({
         bottom:20,
       },
       qrImage:{
-        left: 20,
+        left: '3%',
         transform: [{ rotate: '90deg'}],
-        bottom:90,
-        padding:90
+        bottom:'38%',
+        padding:'25%'
       }
 });

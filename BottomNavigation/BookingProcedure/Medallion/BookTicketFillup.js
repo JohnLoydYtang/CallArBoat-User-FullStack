@@ -16,6 +16,7 @@ import styles from '../../../assets/css/BottomNavigationStyle/BookingProcedureSt
 const BookTicketFillup = ({navigation}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showAgePicker, setShowAgePicker] = useState(false);
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [location, setLocation] = useState('');
@@ -27,6 +28,9 @@ const BookTicketFillup = ({navigation}) => {
   const [messageError, setMessageError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const uniqueId = Date.now();
+
+  const [dob, setDob] = useState(new Date());
+
 
   const route = useRoute();
   const { item } = route.params;
@@ -78,7 +82,7 @@ const BookTicketFillup = ({navigation}) => {
       setError('Please input name');
       return;
     }
-    if (age.trim() === '') {
+    if (dob === '') {
       setError('Please input age ');
       return;
     }
@@ -98,6 +102,16 @@ const BookTicketFillup = ({navigation}) => {
         const usersCollection = collection(db, 'Medallion-BookedTicket');
         const firestoreDate = selectedDate; // Use the selectedDate value instead of creating a new Date object
 
+        const calculateAge = (dob) => {
+          const diff_ms = Date.now() - dob.getTime();
+          const age_dt = new Date(diff_ms); 
+         
+          return Math.abs(age_dt.getUTCFullYear() - 1970);
+         }
+
+        const age = calculateAge(dob);
+        console.log('age', age);
+         
         let discount = 0;
         if (selectedValueTicket !== 'Regular') {
           discount = 20; // 20% discount for student, senior, and disabled tickets
@@ -169,14 +183,18 @@ const BookTicketFillup = ({navigation}) => {
       setSelectedDate(date);
     }
   };
+  
 
 
   const handleNameChange = (text) => {
     setName(text);
   };
 
-  const handleAgeChange = (text) => {
-    setAge(text);
+  const handleAgeChange = (event, date) => {
+    setShowAgePicker(false);
+    if (date) {
+    setDob(date);
+    }
   };
 
   const handleLocationChange = (text) => {
@@ -258,14 +276,24 @@ const BookTicketFillup = ({navigation}) => {
               </View>
 
               <View style={styles.rowContainer}>
-                <View style={styles.textInputStyle}>
-                  <Text style={styles.inputTextStyle}>Age:</Text>
+              <View style={styles.textInputStyle}>
+                  <Text style={styles.inputName}>Date of Birth:</Text>
+                  <Pressable onPress={() => setShowAgePicker(true)}>
+                    <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
                     <TextInput
-                      placeholder="Input your age                                         "
-                      value={age}
-                      onChangeText={handleAgeChange}
-                      keyboardType="numeric"
+                      value={dob.toDateString()} // Display the selected date in the TextInput
+                      editable={false} // Disable direct editing of the TextInput
+                      style={styles.dateInput} // Add the style here
                     />
+                  </Pressable>
+                  {showAgePicker && (
+                    <DateTimePicker
+                      value={dob}
+                      mode="date"
+                      maximumDate={new Date()} // Set minimumDate to the current date to prevent past dates
+                      onChange={handleAgeChange}
+                    />
+                  )}
                 </View>
               </View>
 

@@ -69,7 +69,7 @@ const History = ({navigation}) => {
           let Payment = []
           snapshot.docs.forEach((doc) => {
             const data = doc.data();
-            Payment.push({id: doc.id, paymentId: data.paymentId ,total:data.Total, vatAmount:data.vatAmount, totalWithoutVat:data.totalWithoutVat})
+            Payment.push({id: doc.id, paymentId: data.paymentId ,total:data.Total, vatAmount:data.vatAmount, totalWithoutVat:data.totalWithoutVat, PaymentImage:data.PaymentImage})
           })
           console.log('payment', Payment);
           setPayment(Payment);
@@ -126,11 +126,12 @@ const History = ({navigation}) => {
           const paymentId = payment?.id;
           const vatAmount = payment?.vatAmount;
           const totalWithoutVat= payment?.totalWithoutVat;
+          const PaymentImage= payment?.PaymentImage;
           const date = item.dateIssued.toDate();
           // Format the Date object as a string
           const dateString = date.toLocaleDateString();
           return (
-            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice, total, paymentId, vatAmount, totalWithoutVat })}  
+            <TouchableOpacity key={index} style={styles.Transaction} onPress={() => navigation.navigate('TicketTransaction', {item, medallionImage, medallionPrice, total, paymentId, vatAmount, totalWithoutVat, PaymentImage })}  
             disabled={item.status === 'Cancelled by Agency' || item.status === 'cancelled by user'}>
               <View style={styles.TransactionContent}>
               {medallionImage ? 

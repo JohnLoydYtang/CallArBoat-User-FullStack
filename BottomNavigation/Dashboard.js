@@ -124,7 +124,7 @@ const HomeScreen = () => {
       </View>
       </View>
       <View style={styles.overlay}>
-      <Text style={styles.Recent}>Recent T  rip</Text>
+      <Text style={styles.Recent}>Recent Trip</Text>
       <ScrollView horizontal>
       {bookedTickets.reverse().slice(0, 5).map((ticket, index) => (
       <View style={styles.card} key={index}>

@@ -22,32 +22,15 @@ export default StyleSheet.create({
     Content:{
         marginLeft: 20,
         fontSize: 18,
-        marginBottom: 30,
         padding:20,
     },
-    ButtonDesign:{
-        width: 120,
-        height: 48,
-        borderRadius: 10,  
-        overflow: 'hidden',
-        backgroundColor: 'red',
-        alignItems: 'center',
-        marginTop: 8,
-        marginLeft: 220,
-        marginBottom: 10,
-      },
-      buttonText:{
-        color: 'white',
-        marginTop: 15,
-        fontWeight: 'bold',
-      },
       TicketContainer:{
         backgroundColor: 'white',
         width: 340,
-        height: '50%',
+        height: '60%',
         borderRadius: 15,
         borderColor: 'white',
-        marginBottom: 300,
+        marginBottom: 240,
       },
       TitleText:{
         fontSize: 15,
@@ -57,42 +40,21 @@ export default StyleSheet.create({
       TicketText:{
         fontSize: 15,
         fontWeight: 'bold',
-        marginBottom: 20,
       },
-      rebookContainer:{
-        backgroundColor: '#F0EFFF',
-        width: 300,
-        height: '30%',
-        borderRadius: 15,
-        borderColor: 'white',
-        marginLeft: 18,
+      modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
       },
-      cancelDesign:{
-        width: 100,
-        height: 40,
-        borderRadius: 10,  
-        overflow: 'hidden',
-        backgroundColor: 'red',
-        alignItems: 'center',
-        marginRight:10,
+      closeButton: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        padding: 10,
+        borderRadius: 5,
       },
-      cancelText:{
+      closeButtonText: {
         color: 'white',
-        marginTop: 10,
-        fontWeight: 'bold',
-      },
-      rebookDesign:{
-        width: 100,
-        height: 40,
-        borderRadius: 10,  
-        overflow: 'hidden',
-        backgroundColor: '#4A79E5',
-        alignItems: 'center',
-      },
-      rebookText:{
-        color: 'white',
-        marginTop: 10,
-        fontWeight: 'bold',
       },
 });

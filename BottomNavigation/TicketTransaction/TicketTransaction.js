@@ -13,11 +13,8 @@ const TicketTransaction = ({navigation}) => {
         const [isLoading, setIsLoading] = React.useState(false);
 
         const route = useRoute();
-        const { item, medallionImage, medallionPrice, total, paymentId, vatAmount, totalWithoutVat } = route.params;
-        
-        console.log('totalw/vat', totalWithoutVat);
-        console.log('item',item);
-
+        const { item, medallionImage, medallionPrice, total, paymentId, vatAmount, totalWithoutVat, PaymentImage } = route.params;
+      
         const date = item.Date.toDate();
         const dateString = date.toLocaleDateString();
 
@@ -55,7 +52,7 @@ const TicketTransaction = ({navigation}) => {
         
             // Delay for 5 seconds for cancel picture
             setIsLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            await new Promise(resolve => setTimeout(resolve, 1000));
             setIsLoading(false);
                     
             // Update documents in 'Medallion-BookedTicket' and 'Payments' collections
@@ -68,10 +65,12 @@ const TicketTransaction = ({navigation}) => {
               status: 'cancelled by user',
               headerApprove: "Ticket User Cancellation",
               message: `The user ${item.Name} has cancelled the ticket voluntarily.`,
+              disclaimer: 'Show your Payment Image to the staff to verify.',
               timestamp: serverTimestamp(),
               medallionBookedId: item.id, // You'll need to replace this with the actual user ID
               paymentId: paymentId,
               userID: item.user,
+              PaymentImage: PaymentImage,
             });
         
               // Delay for 2 seconds before closing the modal and navigating back
@@ -113,7 +112,7 @@ const TicketTransaction = ({navigation}) => {
             <Text>No image</Text>
        }     
             <View style={styles.textContainer}>
-            <Text style={styles.textStyle}>Vessel #: <Text style={{textDecorationLine: 'underline'}}>{item.vessel_id}</Text> </Text>
+            <Text style={styles.textStyle}>Vessel #: <Text style={{textDecorationLine: 'underline'}}>{item.vesselId}</Text> </Text>
             <Text style={styles.textStyle}>Date issued: <Text style={{textDecorationLine: 'underline'}}>{dateIssuedString}</Text> </Text>
             <Text style={styles.textStyle}>Name: <Text style={{textDecorationLine: 'underline'}}>{item.Name}</Text></Text>
             <Text style={styles.textStyle}>Vessel: <Text style={{textDecorationLine: 'underline'}}>{item.vesselName}</Text></Text>
