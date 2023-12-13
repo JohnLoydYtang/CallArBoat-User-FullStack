@@ -279,11 +279,10 @@ const BookTicketFillup = ({navigation}) => {
               <View style={styles.textInputStyle}>
                   <Text style={styles.inputName}>Date of Birth:</Text>
                   <Pressable onPress={() => setShowAgePicker(true)}>
-                    <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" />
+                    {/* <Icon name="calendar" size={30} marginLeft={130} top={20} color="black" /> */}
                     <TextInput
                       value={dob.toDateString()} // Display the selected date in the TextInput
                       editable={false} // Disable direct editing of the TextInput
-                      style={styles.dateInput} // Add the style here
                     />
                   </Pressable>
                   {showAgePicker && (
@@ -351,9 +350,9 @@ const BookTicketFillup = ({navigation}) => {
                   <View style={styles.dropdownContainer}>
                     <Picker selectedValue={selectedValueTicket} onValueChange={(itemValue) => setSelectedValueTicket(itemValue)}>
                     <Picker.Item label="REGULAR" value="Regular"/>
-                      <Picker.Item label="STUDENT" value="Student"/>
-                      <Picker.Item label="SENIOR" value="Senior"/>
-                      <Picker.Item label="DISABLED" value="Disabled"/>
+                      <Picker.Item label="STUDENT (20%)" value="Student"/>
+                      <Picker.Item label="SENIOR (20%)" value="Senior"/>
+                      <Picker.Item label="DISABLED (20%)" value="Disabled"/>
                     </Picker>
                   </View>
                 </View>

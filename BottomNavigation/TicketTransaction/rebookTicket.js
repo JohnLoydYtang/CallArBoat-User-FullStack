@@ -180,7 +180,7 @@ const RebookTicket = ({navigation}) => {
                 <View style={styles.textInputStyle}>
                   <Text style={styles.inputTextStyle}>Age:</Text>
                     <TextInput
-                      value={item.Age}
+                      value={item.Age.toString()}
                       editable={false}
                     />
                 </View>

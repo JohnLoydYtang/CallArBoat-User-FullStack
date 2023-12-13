@@ -74,7 +74,7 @@ const TicketTransaction = ({navigation}) => {
             });
         
               // Delay for 2 seconds before closing the modal and navigating back
-              await new Promise(resolve => setTimeout(resolve, 500));
+              await new Promise(resolve => setTimeout(resolve, 1000));
               console.log('success');
               setShowPrompt(false);
               navigation.goBack();
@@ -89,7 +89,7 @@ const TicketTransaction = ({navigation}) => {
           if (isCancelled) {
             timeoutId = setTimeout(() => {
               setShowPrompt(false);
-            }, 4000); // Delay for 3 second before closing the modal
+            }, 1000); // Delay for 3 second before closing the modal
           }
           return () => {
             clearTimeout(timeoutId);
