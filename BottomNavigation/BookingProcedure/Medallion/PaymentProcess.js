@@ -5,7 +5,7 @@ import {db} from '../../../firebaseConfig';
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { storage } from '../../../firebaseConfig';
-import { getFirestore, collection, doc, setDoc, Timestamp, firestore } from "firebase/firestore";
+import { getFirestore, collection, doc, setDoc, Timestamp, firestore, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll} from "firebase/storage";
 import * as ImagePicker from 'expo-image-picker';
 import { getAuth } from '@firebase/auth';
@@ -91,6 +91,7 @@ const PaymentProcess = ({navigation}) => {
           paymentId: paymentId,
           vatAmount: vatAmount,
           totalWithoutVat: totalWithoutVat,
+          paymentDate:serverTimestamp(),
         });
           navigation.navigate('Dashboard'); 
           alert('Payment Success.');

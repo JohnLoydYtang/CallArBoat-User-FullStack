@@ -52,8 +52,7 @@ const TicketTransaction = ({navigation}) => {
         
             // Delay for 5 seconds for cancel picture
             setIsLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setIsLoading(false);
+            await new Promise(resolve => setTimeout(resolve, 2000));
                     
             // Update documents in 'Medallion-BookedTicket' and 'Payments' collections
             await updateDocument('Medallion-BookedTicket', item.id, { status: 'cancelled by user' });
@@ -74,10 +73,12 @@ const TicketTransaction = ({navigation}) => {
             });
         
               // Delay for 2 seconds before closing the modal and navigating back
-              await new Promise(resolve => setTimeout(resolve, 1000));
+              await new Promise(resolve => setTimeout(resolve, 2000));
               console.log('success');
               setShowPrompt(false);
               navigation.goBack();
+              setIsLoading(false);
+
             } catch (error) {
               console.error('Error during cancellation: ', error);
             }
@@ -89,7 +90,7 @@ const TicketTransaction = ({navigation}) => {
           if (isCancelled) {
             timeoutId = setTimeout(() => {
               setShowPrompt(false);
-            }, 1000); // Delay for 3 second before closing the modal
+            }, 5000); // Delay for 3 second before closing the modal
           }
           return () => {
             clearTimeout(timeoutId);
