@@ -143,6 +143,8 @@ const BookTicketFillup = ({navigation}) => {
           vesselName: vesselName,
           routeName: routeName, // Save the route name in Firestore
           status: "pending", // Add the status field with the value "pending"
+          Accom: "ECONOMY",
+          Accom1: "BUSINESS",
           Discount: discount, // Save the discount value in the document
           companyName: companyItem.companyName, // Store only the companyName from companyItem
         });
